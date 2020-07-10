@@ -1,0 +1,6 @@
+name "bladjad"
+description "Blackjack, but without the C's, 'kays?"
+authors "Marie-Joseph"
+copyright "Copyright © 2020, Marie-Joseph"
+license "CC0"
+dependency "dgame" version="~>0.6.7"
