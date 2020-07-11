@@ -8,12 +8,12 @@ It uses free assets found on itch.io and collected [here](https://itch.io/c/1043
 ## Compilation
 Since Bladjad is written in D, compilation should be extremely simple. Install a
 D compiler for your system, as well as the dub build manager if it's not included.
+You'll also need SDL and OpenGL development files.
 Then, simply clone this repository and navigate to its root directory. There,
-simply run `dub build bladjad`. A binary will be produced in the same directory.
+run `dub build bladjad`. A binary will be produced in the same directory.
 
-Once at 1.0, Bladjad will be distributed as position-independant binaries on
-itch.io. Until then, the binary must be in the same directory as the fonts and
-images directories.
+Once at 1.0, Bladjad will be distributed on itch.io. Until then, the binary must
+be in the same directory as the fonts and images directories.
 
 ## Controls
 Bladjad's control scheme is simple and, hopefully, intuitive - feedback welcome.
