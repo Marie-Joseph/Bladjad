@@ -29,8 +29,6 @@ abstract class State {
 
     public void update(Event event, ref Window wnd) {} // handles updates
 
-    public void update() {} // handles gameloop stuff
-
     public void render(ref Window wnd) {} // draws any graphics
 
     public void exit() {} // cleans up before leaving

@@ -156,7 +156,7 @@ class PlayState : State {
 
     private void playerHit(ref Window wnd) {
         renderlessPlayerHit();
-        if (playerHand.hasBusted)
+        if (playerHand.hasBusted || (playerHand.curScore == 21))
             playerStand(wnd);
         this.render(wnd);
         wnd.display();

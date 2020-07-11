@@ -26,6 +26,7 @@ import Dgame.System : Keyboard;
 /* Project imports */
 import creditState;
 import playState;
+import rulesState;
 import stateMachine;
 import startState;
 
@@ -41,6 +42,7 @@ void main() {
 
     StateMachine gStateMachine = new StateMachine(["Start": new StartState(),
                                                    "Play": new PlayState(),
+                                                   "Rules": new RulesState(),
                                                    "Credits": new CreditState]);
 
     Event event;
