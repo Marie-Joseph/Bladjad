@@ -53,8 +53,8 @@ class CreditState : State {
     override void enter(StateMachine gStateMachine) {
         this.gStateMachine = gStateMachine;
 
-        bigFont = Font("fonts/ExpressionPro.ttf", 45);
-        smallFont = Font("fonts/ExpressionPro.ttf", 25);
+        bigFont = Font("fonts/ExpressionPro.ttf", 64);
+        smallFont = Font("fonts/ExpressionPro.ttf", 32);
 
         uint halfway = WndDim.width / 2;
 
@@ -64,7 +64,7 @@ class CreditState : State {
         programmerHeader.background = Color4b(0x143D4C);
         programmerHeader.update();
         programmerHeader.setPosition(halfway - (programmerHeader.width / 2),
-                                     programmerHeader.height * 2);
+                                     programmerHeader.height * 1.5);
 
         programmerText = new Text(smallFont, programmerString);
         programmerText.mode = Font.Mode.Shaded;

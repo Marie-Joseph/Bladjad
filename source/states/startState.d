@@ -50,7 +50,7 @@ class StartState : State {
         titleText.background = Color4b(0x143D4C);
         titleText.update();
         titleText.setPosition((WndDim.width / 2) - (titleText.width / 2),
-                              WndDim.height / 4);
+                              WndDim.height / 5);
         titleText.update();
 
         auto last = titleText;

@@ -26,7 +26,6 @@ class RulesState : State {
     private {
         StateMachine gStateMachine;
 
-        Font bigFont;
         Font smallFont;
 
         immutable string[] rulesStrings = [
@@ -52,8 +51,7 @@ class RulesState : State {
     override void enter(StateMachine gStateMachine) {
         this.gStateMachine = gStateMachine;
 
-        bigFont = Font("fonts/ExpressionPro.ttf", 45);
-        smallFont = Font("fonts/ExpressionPro.ttf", 30);
+        smallFont = Font("fonts/ExpressionPro.ttf", 32);
 
         Text last;
         foreach(i, str; rulesStrings) {
@@ -63,7 +61,7 @@ class RulesState : State {
             rulesText[i].background = Color4b(0x143D4C);
             rulesText[i].update();
             rulesText[i].setPosition((WndDim.width / 2) - (rulesText[i].width / 2),
-                             (last is null) ? (rulesText[i].height * 2) : (last.y + last.height));
+                             (last is null) ? (rulesText[i].height * 5) : (last.y + last.height));
             last = rulesText[i];
         }
     }

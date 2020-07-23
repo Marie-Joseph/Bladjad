@@ -44,10 +44,6 @@ class PlayState : State {
         Deck deck;
 
         CardSprite cardBackSprite;
-        CardSprite transSprite;
-        float spriteScale = 0.75;
-
-        Shape centralLine;
 
         Hand playerHand;
         Hand dealerHand;
@@ -56,8 +52,6 @@ class PlayState : State {
 
         bool stood;
         bool firstRun;
-
-        uint waitTime = 1000;
     }
 
     override void enter(StateMachine gStateMachine) {
@@ -66,16 +60,6 @@ class PlayState : State {
         cardBackSprite = new CardSprite("images/cards/back.png");
         cardBackSprite.setPosition(WndDim.width - cardBackSprite.width - 25,
                                    (WndDim.height / 2) - (cardBackSprite.height / 2));
-
-        transSprite = new CardSprite("images/cards/back.png");
-
-        centralLine = new Shape(Geometry.Lines, [
-            Vertex(0, WndDim.height / 2),
-            Vertex(WndDim.width, WndDim.height / 2)
-        ]);
-        centralLine.lineWidth = 4;
-        centralLine.setColor(Color4b.Red);
-
 
         deck = new Deck();
 
@@ -88,13 +72,14 @@ class PlayState : State {
         instText.foreground = Color4b(0x00FFFF);
         instText.background = Color4b(0x143D4C);
         instText.update();
-        instText.setPosition(5, 5);
-        // instText.setPosition(WndDim.width - instText.width - 5, WndDim.height - instText.height - 5);
+        // instText.setPosition(5, 5);
+        instText.setPosition(WndDim.width - instText.width - 5, WndDim.height - instText.height - 5);
 
-        endFont = Font("fonts/ExpressionPro.ttf", 50);
+        endFont = Font("fonts/ExpressionPro.ttf", 72);
         endText = new Text(endFont, "Placeholder");
         endText.mode = Font.Mode.Shaded;
-        endText.background = Color4b(0x9370DB);
+        endText.foreground = Color4b(0x00FFFF);
+        endText.background = Color4b(0x143D4C);
 
         firstRun = true;
     }
@@ -137,7 +122,6 @@ class PlayState : State {
             playerHit(wnd); hit(wnd); playerHit(wnd); hit(wnd);
         }
 
-        wnd.draw(centralLine);
         wnd.draw(cardBackSprite);
         foreach(card; playerHand) {
             wnd.draw(card);
@@ -158,8 +142,6 @@ class PlayState : State {
         dealerHand.finish();
         deck.destroy();
         cardBackSprite.destroy();
-        transSprite.destroy();
-        centralLine.destroy();
         instText.destroy();
         endText.destroy();
     }
