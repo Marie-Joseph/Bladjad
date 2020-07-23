@@ -60,56 +60,64 @@ class CreditState : State {
 
         programmerHeader = new Text(bigFont, programmerHeaderString);
         programmerHeader.mode = Font.Mode.Shaded;
-        programmerHeader.background = Color4b(0x9370DB);
+        programmerHeader.foreground = Color4b(0x00FFFF);
+        programmerHeader.background = Color4b(0x143D4C);
         programmerHeader.update();
         programmerHeader.setPosition(halfway - (programmerHeader.width / 2),
                                      programmerHeader.height * 2);
 
         programmerText = new Text(smallFont, programmerString);
         programmerText.mode = Font.Mode.Shaded;
-        programmerText.background = Color4b(0x9370DB);
+        programmerText.foreground = Color4b(0x00FFFF);
+        programmerText.background = Color4b(0x143D4C);
         programmerText.update();
         programmerText.setPosition(halfway - (programmerText.width / 2),
                                    programmerHeader.y + (programmerText.height * 2));
 
         artHeader = new Text(bigFont, artHeaderString);
         artHeader.mode = Font.Mode.Shaded;
-        artHeader.background = Color4b(0x9370DB);
+        artHeader.foreground = Color4b(0x00FFFF);
+        artHeader.background = Color4b(0x143D4C);
         artHeader.update();
         artHeader.setPosition(halfway - (artHeader.width / 2),
                               programmerText.y + (artHeader.height * 2));
 
         artText = new Text(smallFont, artString);
         artText.mode = Font.Mode.Shaded;
-        artText.background = Color4b(0x9370DB);
+        artText.foreground = Color4b(0x00FFFF);
+        artText.background = Color4b(0x143D4C);
         artText.update();
         artText.setPosition(halfway - (artText.width / 2),
                             artHeader.y + (artText.height * 2));
 
         fontHeader = new Text(bigFont, fontHeaderString);
         fontHeader.mode = Font.Mode.Shaded;
-        fontHeader.background = Color4b(0x9370DB);
+        fontHeader.foreground = Color4b(0x00FFFF);
+        fontHeader.background = Color4b(0x143D4C);
         fontHeader.update();
         fontHeader.setPosition(halfway - (fontHeader.width / 2),
                                artText.y + (fontHeader.height * 2));
 
         fontText = new Text(smallFont, fontString);
         fontText.mode = Font.Mode.Shaded;
-        fontText.background = Color4b(0x9370DB);
+        fontText.foreground = Color4b(0x00FFFF);
+        fontText.background = Color4b(0x143D4C);
         fontText.update();
         fontText.setPosition(halfway - (fontText.width / 2),
                              fontHeader.y + (fontText.height * 2));
 
         licenseHeader = new Text(bigFont, licenseHeaderString);
         licenseHeader.mode = Font.Mode.Shaded;
-        licenseHeader.background = Color4b(0x9370DB);
+        licenseHeader.foreground = Color4b(0x00FFFF);
+        licenseHeader.background = Color4b(0x143D4C);
         licenseHeader.update();
         licenseHeader.setPosition(halfway - (licenseHeader.width / 2),
                                   fontText.y + (licenseHeader.height * 2));
 
         licenseText = new Text(smallFont, licenseString);
         licenseText.mode = Font.Mode.Shaded;
-        licenseText.background = Color4b(0x9370DB);
+        licenseText.foreground = Color4b(0x00FFFF);
+        licenseText.background = Color4b(0x143D4C);
         licenseText.update();
         licenseText.setPosition(halfway - (licenseText.width / 2),
                              licenseHeader.y + (licenseText.height * 2));

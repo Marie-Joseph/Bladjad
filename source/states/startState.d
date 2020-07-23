@@ -47,7 +47,7 @@ class StartState : State {
         titleText = new Text(titleFont, "Bladjad");
         titleText.mode = Font.Mode.Shaded;
         titleText.foreground = Color4b(0xFFFF00);
-        titleText.background = Color4b(0x9370DB);
+        titleText.background = Color4b(0x143D4C);
         titleText.update();
         titleText.setPosition((WndDim.width / 2) - (titleText.width / 2),
                               WndDim.height / 4);
@@ -57,7 +57,8 @@ class StartState : State {
         foreach (i, name; optNames) {
             options[i] = new Text(menuFont, name);
             options[i].mode = Font.Mode.Shaded;
-            options[i].foreground = Color4b(0x9370DB);
+            options[i].foreground = Color4b(0x00FFFF);
+            options[i].background = Color4b(0x143D4C);
             options[i].update();
             options[i].setPosition((WndDim.width / 2) - (options[i].width / 2),
                                   last.y + last.height + (options[i].height * 2));

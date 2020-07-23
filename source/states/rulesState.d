@@ -59,7 +59,8 @@ class RulesState : State {
         foreach(i, str; rulesStrings) {
             rulesText[i] = new Text(smallFont, str);
             rulesText[i].mode = Font.Mode.Shaded;
-            rulesText[i].background = Color4b(0x9370DB);
+            rulesText[i].foreground = Color4b(0x00FFFF);
+            rulesText[i].background = Color4b(0x143D4C);
             rulesText[i].update();
             rulesText[i].setPosition((WndDim.width / 2) - (rulesText[i].width / 2),
                              (last is null) ? (rulesText[i].height * 2) : (last.y + last.height));

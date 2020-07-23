@@ -82,12 +82,14 @@ class PlayState : State {
         playerHand = new Hand(gStateMachine, true);
         dealerHand = new Hand(gStateMachine);
 
-        instFont = Font("fonts/ExpressionPro.ttf", 25);
+        instFont = Font("fonts/ExpressionPro.ttf", 20);
         instText = new Text(instFont, instString);
         instText.mode = Font.Mode.Shaded;
-        instText.background = Color4b(0x9370DB);
+        instText.foreground = Color4b(0x00FFFF);
+        instText.background = Color4b(0x143D4C);
         instText.update();
-        instText.setPosition(WndDim.width - instText.width - 5, WndDim.height - instText.height - 5);
+        instText.setPosition(5, 5);
+        // instText.setPosition(WndDim.width - instText.width - 5, WndDim.height - instText.height - 5);
 
         endFont = Font("fonts/ExpressionPro.ttf", 50);
         endText = new Text(endFont, "Placeholder");
