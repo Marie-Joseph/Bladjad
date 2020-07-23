@@ -18,15 +18,15 @@ images directories, wherever you choose that to be.
 
 ## Controls
 Bladjad's control scheme is simple and, hopefully, intuitive.
-### Menu:
-_Arrow keys_ - navigate
-_Enter key_ - select highlighted option
-### In-Game
-_H key_ - hit
-_S key_ - stand
-_R key_ - restart
-### Universal
-_M key_ - return to the menu
+#### Menu:
+* _Arrow keys_ - navigate
+* _Enter key_ - select highlighted option
+#### In-Game
+* _H key_ - hit
+* _S key_ - stand
+* _R key_ - restart
+#### Universal
+* _M key_ - return to the menu
 
 ## Contributions
 At this time, no code contributions will be accepted here. However, any bugs,
