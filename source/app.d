@@ -10,8 +10,6 @@
 
 /**
  * This is the entry file for Bladjad.
- *
- * TODO: PlayState
  */
 module Bladjad;
 

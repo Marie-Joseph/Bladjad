@@ -10,8 +10,6 @@
 
 /**
  * Play State - handles the game of blackjack itself
- *
- * TODO: Card placement transitions
  */
 
 /* Phobos imports */
@@ -39,6 +37,9 @@ class PlayState : State {
 
         Font endFont;
         Text endText;
+        Text restartText;
+        Text bustText;
+        Text blackjackText;
         bool ended;
 
         Deck deck;
@@ -81,15 +82,36 @@ class PlayState : State {
         endText.foreground = Color4b(0x00FFFF);
         endText.background = Color4b(0x143D4C);
 
+        restartText = new Text(instFont, "Press 'r' to restart, 'm' for menu");
+        restartText.mode = Font.Mode.Shaded;
+        restartText.foreground = Color4b(0x00FFFF);
+        restartText.background = Color4b(0x143D4C);
+        restartText.update();
+
+        bustText = new Text(endFont, "BUST");
+        bustText.mode = Font.Mode.Shaded;
+        bustText.foreground = Color4b(0x00FFFF);
+        bustText.background = Color4b(0x143D4C);
+        bustText.update();
+        bustText.setPosition((WndDim.width / 2) - (bustText.width / 2),
+                             WndDim.height - (bustText.height * 3));
+
+        blackjackText = new Text(endFont, "BLACKJACK");
+        blackjackText.mode = Font.Mode.Shaded;
+        blackjackText.foreground = Color4b(0x00FFFF);
+        blackjackText.background = Color4b(0x143D4C);
+        blackjackText.update();
+        blackjackText.setPosition((WndDim.width / 2) - (blackjackText.width / 2),
+                                  WndDim.height - (blackjackText.height * 3));
+
         firstRun = true;
     }
 
     override void update(Event event, ref Window wnd) {
         switch (event.keyboard.key) {
             case Keyboard.Key.H:
-                if (!stood) {
+                if (!stood)
                     playerHit(wnd);
-                }
                 break;
 
             case Keyboard.Key.M:
@@ -105,14 +127,10 @@ class PlayState : State {
                 break;
 
             case Keyboard.Key.S:
-                stood = true;
+                playerStand(wnd);
                 break;
 
             default: break;
-        }
-
-        if (stood) {
-            playerStand(wnd);
         }
     }
 
@@ -131,10 +149,16 @@ class PlayState : State {
             wnd.draw(card);
         }
         dealerHand.reset();
-        if (ended)
+        if (ended) {
             wnd.draw(endText);
-        else
+            wnd.draw(restartText);
+        } else {
             wnd.draw(instText);
+        }
+        if (playerHand.hasBusted())
+            wnd.draw(bustText);
+        else if (playerHand.curScore() == 21)
+            wnd.draw(blackjackText);
     }
 
     override void exit() {
@@ -144,6 +168,8 @@ class PlayState : State {
         cardBackSprite.destroy();
         instText.destroy();
         endText.destroy();
+        bustText.destroy();
+        blackjackText.destroy();
     }
 
     private void playerHit(ref Window wnd) {
@@ -163,6 +189,7 @@ class PlayState : State {
     }
 
     private void playerStand(ref Window wnd) {
+        stood = true;
         uint dealerScore;
         while ((dealerScore = dealerHand.curScore()) < 17) {
             hit(wnd);
@@ -205,7 +232,10 @@ class PlayState : State {
     private void setEndText(string toWrite) {
         endText.setData(toWrite);
         endText.update();
-        endText.setPosition((WndDim.width / 2) - (endText.width / 2), (WndDim.height / 2) - (endText.height / 2));
+        endText.setPosition((WndDim.width / 2) - (endText.width / 2),
+                            (WndDim.height / 2) - (endText.height / 2));
+        restartText.setPosition((WndDim.width / 2) - (restartText.width / 2),
+                                endText.y + endText.height + 5);
         ended = true;
     }
 }

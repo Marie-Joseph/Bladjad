@@ -27,6 +27,7 @@ Bladjad's control scheme is simple and, hopefully, intuitive.
 * _R key_ - restart
 #### Universal
 * _M key_ - return to the menu
+* _Q key/Escape key_ - exit
 
 ## Contributions
 At this time, no code contributions will be accepted here. However, any bugs,
