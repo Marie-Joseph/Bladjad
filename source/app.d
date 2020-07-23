@@ -32,13 +32,13 @@ import startState;
 
 enum WndDim: int { width = 1024, height = 768 }
 
+Window wnd;
+
 void main() {
-    Window wnd = Window(WndDim.width, WndDim.height, "Bladjad");
+    wnd = Window(WndDim.width, WndDim.height, "Bladjad");
 
     wnd.setVerticalSync(Window.VerticalSync.Enable);
     wnd.setClearColor(Color4b(0x4C3D14));
-    Texture backTex = Texture(Surface("images/background.png"));
-    Sprite backSprite = new Sprite(backTex);
 
     StateMachine gStateMachine = new StateMachine(["Start": new StartState(),
                                                    "Play": new PlayState(),
@@ -49,7 +49,6 @@ void main() {
     gStateMachine.change("Start");
     outer: while (true) {
         wnd.clear();
-        wnd.draw(backSprite);
 
         /* Check for events that affect the entire program */
         while (wnd.poll(&event)) {
@@ -57,7 +56,6 @@ void main() {
 
                 case Event.Type.Quit:
                     gStateMachine.finish();
-                    backSprite.destroy();
                     break outer;
 
                 case Event.Type.KeyDown:

@@ -13,13 +13,16 @@
  */
 
 /* Phobos imports */
+import std.math : abs;
 
 /* Dgame imports */
 import Dgame.Graphic : Texture, Sprite, Surface;
+import Dgame.System : StopWatch;
 import Dgame.Window : Window;
 
 /* Project imports */
 import Bladjad;
+import stateMachine;
 
 class CardSprite : Sprite {
 
@@ -39,20 +42,49 @@ class CardSprite : Sprite {
 
     @property float height() { return tex.height() * scale; }
 
-    public void place(size_t numPlayed, bool playerCard = false) {
-        float xDim;
-        if (playerCard)
-            xDim = (((WndDim.width * 3) / 4) - this.width) - (((this.width * 2) / 5) * numPlayed);
-        else
-            xDim = ((WndDim.width / 4) + ((this.width * 2) / 5) * numPlayed);
+    public void place(ref Window wnd, size_t numPlayed, StateMachine gStateMachine, bool playerCard = false) {
+        float startX = WndDim.width - this.width - 25;
+        float startY = (WndDim.height / 2) - (this.height / 2);
 
-        float yDim = playerCard ? WndDim.height - (this.height / 2) : -(this.height / 2);
+        float endX;
+        if (playerCard)
+            endX = (((WndDim.width * 3) / 4) - this.width) - (((this.width * 2) / 5) * numPlayed);
+        else
+            endX = ((WndDim.width / 4) + ((this.width * 2) / 5) * numPlayed);
+
+        float endY = playerCard ? WndDim.height - (this.height / 2) : -(this.height / 2);
 
         if (!playerCard) {
             this.setRotationCenter(this.width / 2, this.height / 2);
             this.setRotation(180);
         }
 
-        this.setPosition(xDim, yDim);
+        this.transition(wnd, gStateMachine, startX, startY, endX, endY);
+    }
+
+    private void transition(ref Window wnd, StateMachine gStateMachine, float startX, float startY, float endX, float endY) {
+        this.setPosition(startX, startY);
+        this.render(wnd, gStateMachine);
+
+        StopWatch sw;
+        uint elapsedTime;
+        uint goalTime = 500;
+        float diffX = (endX - startX) / goalTime;
+        float diffY = (endY - startY) / goalTime;
+        sw.reset();
+        while ((elapsedTime = sw.getElapsedTicks()) < goalTime) {
+            float tempX = (diffX * elapsedTime) + startX;
+            float tempY = (diffY * elapsedTime) + startY;
+            this.setPosition(tempX, tempY);
+            this.render(wnd, gStateMachine);
+        }
+
+        this.setPosition(endX, endY);
+    }
+
+    private void render(ref Window wnd, StateMachine gStateMachine) {
+        wnd.clear();
+        gStateMachine.render(wnd);
+        wnd.display();
     }
 }

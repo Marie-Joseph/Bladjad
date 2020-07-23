@@ -55,6 +55,7 @@ class PlayState : State {
         string instString = "H: hit   S: stand   M: menu";
 
         bool stood;
+        bool firstRun;
 
         uint waitTime = 1000;
     }
@@ -78,8 +79,8 @@ class PlayState : State {
 
         deck = new Deck();
 
-        playerHand = new Hand(true);
-        dealerHand = new Hand();
+        playerHand = new Hand(gStateMachine, true);
+        dealerHand = new Hand(gStateMachine);
 
         instFont = Font("fonts/ExpressionPro.ttf", 25);
         instText = new Text(instFont, instString);
@@ -93,7 +94,7 @@ class PlayState : State {
         endText.mode = Font.Mode.Shaded;
         endText.background = Color4b(0x9370DB);
 
-        renderlessPlayerHit(); hit(); renderlessPlayerHit(); hit();
+        firstRun = true;
     }
 
     override void update(Event event, ref Window wnd) {
@@ -117,16 +118,23 @@ class PlayState : State {
                 break;
 
             case Keyboard.Key.S:
-                if (!stood) {
-                    playerStand(wnd);
-                }
+                stood = true;
                 break;
 
             default: break;
         }
+
+        if (stood) {
+            playerStand(wnd);
+        }
     }
 
     override void render(ref Window wnd) {
+        if (firstRun) {
+            firstRun = false;
+            playerHit(wnd); hit(wnd); playerHit(wnd); hit(wnd);
+        }
+
         wnd.draw(centralLine);
         wnd.draw(cardBackSprite);
         foreach(card; playerHand) {
@@ -155,37 +163,25 @@ class PlayState : State {
     }
 
     private void playerHit(ref Window wnd) {
-        renderlessPlayerHit();
+        if (deck.empty)
+            deck.shuffle();
+
+        playerHand.add(deck.draw(), wnd);
         if (playerHand.hasBusted || (playerHand.curScore == 21))
             playerStand(wnd);
-        this.render(wnd);
-        wnd.display();
-        StopWatch.wait(waitTime);
     }
 
-    private void renderlessPlayerHit() {
+    private void hit(ref Window wnd) {
         if (deck.empty)
             deck.shuffle();
-        playerHand.add(deck.draw());
-    }
 
-    private void hit() {
-        if (deck.empty)
-            deck.shuffle();
-        dealerHand.add(deck.draw());
+        dealerHand.add(deck.draw(), wnd);
     }
 
     private void playerStand(ref Window wnd) {
-        this.render(wnd);
-        wnd.display();
-        StopWatch.wait(waitTime);
-        stood = true;
         uint dealerScore;
         while ((dealerScore = dealerHand.curScore()) < 17) {
-            hit();
-            this.render(wnd);
-            wnd.display();
-            StopWatch.wait(waitTime);
+            hit(wnd);
 
         }
         bool dealerBust = dealerHand.hasBusted();
@@ -210,13 +206,6 @@ class PlayState : State {
         }
     }
 
-    private void setEndText(string toWrite) {
-        endText.setData(toWrite);
-        endText.update();
-        endText.setPosition((WndDim.width / 2) - (endText.width / 2), (WndDim.height / 2) - (endText.height / 2));
-        ended = true;
-    }
-
     private void tie() {
         setEndText("It's a draw!");
     }
@@ -227,6 +216,13 @@ class PlayState : State {
 
     private void playerLoss() {
         setEndText("You lose...");
+    }
+
+    private void setEndText(string toWrite) {
+        endText.setData(toWrite);
+        endText.update();
+        endText.setPosition((WndDim.width / 2) - (endText.width / 2), (WndDim.height / 2) - (endText.height / 2));
+        ended = true;
     }
 }
 
