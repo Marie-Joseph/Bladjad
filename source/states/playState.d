@@ -96,7 +96,7 @@ class PlayState : State {
         bustText.setPosition((WndDim.width / 2) - (bustText.width / 2),
                              WndDim.height - (bustText.height * 3));
 
-        blackjackText = new Text(endFont, "BLACKJACK");
+        blackjackText = new Text(endFont, "BLADJAD");
         blackjackText.mode = Font.Mode.Shaded;
         blackjackText.foreground = Color4b(0x00FFFF);
         blackjackText.background = Color4b(0x143D4C);

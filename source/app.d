@@ -14,11 +14,14 @@
 module Bladjad;
 
 /* Phobos imports */
+import std.datetime.systime : Clock;
+import std.file : exists, mkdir;
+import std.format : format;
 import std.stdio : writeln;
 
 /* Dgame imports */
 import Dgame.Graphic : Color4b, Texture, Sprite, Surface;
-import Dgame.Window : Event, Window;
+import Dgame.Window : DisplayMode, Event, Window;
 import Dgame.System : Keyboard;
 
 /* Project imports */
@@ -34,14 +37,19 @@ Window wnd;
 
 void main() {
     wnd = Window(WndDim.width, WndDim.height, "Bladjad");
-
-    wnd.setVerticalSync(Window.VerticalSync.Enable);
+    auto displayRect = DisplayMode.getDisplayBounds();
+    wnd.setPosition((displayRect.width / 2) - (WndDim.width / 2),
+                    (displayRect.height / 2) - (WndDim.height / 2));
+    wnd.setVerticalSync(Window.VerticalSync.Disable);
     wnd.setClearColor(Color4b(0x4C3D14));
 
     StateMachine gStateMachine = new StateMachine(["Start": new StartState(),
                                                    "Play": new PlayState(),
                                                    "Rules": new RulesState(),
                                                    "Credits": new CreditState]);
+
+    if (!exists("screenshots"))
+        mkdir("screenshots");
 
     Event event;
     gStateMachine.change("Start");
@@ -59,6 +67,8 @@ void main() {
                 case Event.Type.KeyDown:
                     if ((event.keyboard.key == Keyboard.Key.Esc) || (event.keyboard.key == Keyboard.Key.Q))
                         wnd.push(Event.Type.Quit);
+                    else if (event.keyboard.key == Keyboard.Key.P)
+                        wnd.capture().saveToFile(format!"screenshots/Screenshot-%s.png"(Clock.currTime().toISOString()));
                     else
                         gStateMachine.update(event, wnd);
                     break;
