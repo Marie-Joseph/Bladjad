@@ -25,13 +25,10 @@ import Dgame.Graphic;
 /* Project imports */
 import Bladjad;
 import cardSprite;
-import stateMachine;
 
 class Hand {
 
     private {
-        StateMachine gStateMachine;
-
         string[] cardNames;
         CardSprite[] cardSprites;
 
@@ -42,15 +39,14 @@ class Hand {
         size_t frontIndex;
     }
 
-    this(StateMachine gStateMachine, bool player = false) {
+    this(bool player = false) {
         this.isPlayer = player;
-        this.gStateMachine = gStateMachine;
     }
 
-    public void add(string card, ref Window wnd) {
+    public void add(string card) {
         cardNames ~= card;
         cardSprites ~= new CardSprite(format!"images/cards/%s.png"(card));
-        cardSprites[$ - 1].place(wnd, cardSprites.length - 1, gStateMachine, isPlayer);
+        cardSprites[$ - 1].place(cardSprites.length - 1, isPlayer);
         updateScore();
     }
 

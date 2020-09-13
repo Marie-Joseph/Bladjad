@@ -34,6 +34,7 @@ import startState;
 enum WndDim: int { width = 1024, height = 768 }
 
 Window wnd;
+StateMachine gStateMachine;
 
 void main() {
     wnd = Window(WndDim.width, WndDim.height, "Bladjad");
@@ -43,10 +44,10 @@ void main() {
     wnd.setVerticalSync(Window.VerticalSync.Disable);
     wnd.setClearColor(Color4b(0x4C3D14));
 
-    StateMachine gStateMachine = new StateMachine(["Start": new StartState(),
-                                                   "Play": new PlayState(),
-                                                   "Rules": new RulesState(),
-                                                   "Credits": new CreditState]);
+    gStateMachine = new StateMachine(["Start": new StartState(),
+                                      "Play": new PlayState(),
+                                      "Rules": new RulesState(),
+                                      "Credits": new CreditState]);
 
     if (!exists("screenshots"))
         mkdir("screenshots");
@@ -70,14 +71,16 @@ void main() {
                     else if (event.keyboard.key == Keyboard.Key.P)
                         wnd.capture().saveToFile(format!"screenshots/Screenshot-%s.png"(Clock.currTime().toISOString()));
                     else
-                        gStateMachine.update(event, wnd);
+                        goto default;
                     break;
 
-                default: break;
+                default:
+                    gStateMachine.update(event);
+                    break;
             }
         }
 
-        gStateMachine.render(wnd);
+        gStateMachine.render();
 
         wnd.display();
     }

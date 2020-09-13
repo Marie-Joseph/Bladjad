@@ -24,14 +24,11 @@ import Bladjad;
 import cardSprite;
 import deck;
 import hand;
-import stateMachine;
 import state;
 
 class PlayState : State {
 
     private {
-        StateMachine gStateMachine;
-
         Font instFont;
         Text instText;
 
@@ -55,22 +52,20 @@ class PlayState : State {
         bool firstRun;
     }
 
-    override void enter(StateMachine gStateMachine) {
-        this.gStateMachine = gStateMachine;
-
+    override void enter() {
         cardBackSprite = new CardSprite("images/cards/back.png");
         cardBackSprite.setPosition(WndDim.width - cardBackSprite.width - 25,
                                    (WndDim.height / 2) - (cardBackSprite.height / 2));
 
         deck = new Deck();
 
-        playerHand = new Hand(gStateMachine, true);
-        dealerHand = new Hand(gStateMachine);
+        playerHand = new Hand(true);
+        dealerHand = new Hand();
 
         instFont = Font("fonts/ExpressionPro.ttf", 20);
         instText = new Text(instFont, instString);
         instText.mode = Font.Mode.Shaded;
-        instText.foreground = Color4b(0x00FFFF);
+        instText.foreground = Color4b.Yellow;
         instText.background = Color4b(0x143D4C);
         instText.update();
         // instText.setPosition(5, 5);
@@ -79,18 +74,18 @@ class PlayState : State {
         endFont = Font("fonts/ExpressionPro.ttf", 72);
         endText = new Text(endFont, "Placeholder");
         endText.mode = Font.Mode.Shaded;
-        endText.foreground = Color4b(0x00FFFF);
+        endText.foreground = Color4b.Yellow;
         endText.background = Color4b(0x143D4C);
 
         restartText = new Text(instFont, "Press 'r' to restart, 'm' for menu");
         restartText.mode = Font.Mode.Shaded;
-        restartText.foreground = Color4b(0x00FFFF);
+        restartText.foreground = Color4b.Yellow;
         restartText.background = Color4b(0x143D4C);
         restartText.update();
 
         bustText = new Text(endFont, "BUST");
         bustText.mode = Font.Mode.Shaded;
-        bustText.foreground = Color4b(0x00FFFF);
+        bustText.foreground = Color4b.Yellow;
         bustText.background = Color4b(0x143D4C);
         bustText.update();
         bustText.setPosition((WndDim.width / 2) - (bustText.width / 2),
@@ -98,7 +93,7 @@ class PlayState : State {
 
         blackjackText = new Text(endFont, "BLADJAD");
         blackjackText.mode = Font.Mode.Shaded;
-        blackjackText.foreground = Color4b(0x00FFFF);
+        blackjackText.foreground = Color4b.Yellow;
         blackjackText.background = Color4b(0x143D4C);
         blackjackText.update();
         blackjackText.setPosition((WndDim.width / 2) - (blackjackText.width / 2),
@@ -107,37 +102,42 @@ class PlayState : State {
         firstRun = true;
     }
 
-    override void update(Event event, ref Window wnd) {
-        switch (event.keyboard.key) {
-            case Keyboard.Key.H:
-                if (!stood)
-                    playerHit(wnd);
-                break;
+    override void update(Event event) {
+        if (event.type == Event.Type.KeyDown) {
+            switch (event.keyboard.key) {
+                case Keyboard.Key.H:
+                    if (!stood)
+                        playerHit();
+                    break;
 
-            case Keyboard.Key.M:
-                stood = false;
-                ended = false;
-                gStateMachine.change("Start");
-                break;
+                case Keyboard.Key.M:
+                    stood = false;
+                    ended = false;
+                    gStateMachine.change("Start");
+                    break;
 
-            case Keyboard.Key.R:
-                stood = false;
-                ended = false;
-                gStateMachine.change("Play");
-                break;
+                case Keyboard.Key.R:
+                    stood = false;
+                    ended = false;
+                    gStateMachine.change("Play");
+                    break;
 
-            case Keyboard.Key.S:
-                playerStand(wnd);
-                break;
+                case Keyboard.Key.S:
+                    playerStand();
+                    break;
 
-            default: break;
+                default: break;
+            }
+        } else if ((event.type == Event.Type.MouseButtonUp) && (event.mouse.button.button == Mouse.Button.Left)) {
+            Vector2!int mouseVect = Mouse.getCursorPosition();
+            writeln("Mouse clicked at ", mouseVect.x, ", ", mouseVect.y);
         }
     }
 
-    override void render(ref Window wnd) {
+    override void render() {
         if (firstRun) {
             firstRun = false;
-            playerHit(wnd); hit(wnd); playerHit(wnd); hit(wnd);
+            playerHit(); hit(); playerHit(); hit();
         }
 
         wnd.draw(cardBackSprite);
@@ -172,27 +172,27 @@ class PlayState : State {
         blackjackText.destroy();
     }
 
-    private void playerHit(ref Window wnd) {
+    private void playerHit() {
         if (deck.empty)
             deck.shuffle();
 
-        playerHand.add(deck.draw(), wnd);
+        playerHand.add(deck.draw());
         if (playerHand.hasBusted || (playerHand.curScore == 21))
-            playerStand(wnd);
+            playerStand();
     }
 
-    private void hit(ref Window wnd) {
+    private void hit() {
         if (deck.empty)
             deck.shuffle();
 
-        dealerHand.add(deck.draw(), wnd);
+        dealerHand.add(deck.draw());
     }
 
-    private void playerStand(ref Window wnd) {
+    private void playerStand() {
         stood = true;
         uint dealerScore;
         while ((dealerScore = dealerHand.curScore()) < 17) {
-            hit(wnd);
+            hit();
 
         }
         bool dealerBust = dealerHand.hasBusted();

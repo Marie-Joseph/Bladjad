@@ -16,20 +16,19 @@
 
 /* Dgame imports */
 public import Dgame.Graphic : Color4b, Text, Shape;
-public import Dgame.Math : Geometry, Vertex;
-public import Dgame.System : Font, Keyboard, StopWatch;
+public import Dgame.Math : Geometry, Vector2, Vertex;
+public import Dgame.System : Font, Keyboard, Mouse, StopWatch;
 public import Dgame.Window : Event, Window;
 
 /* Project imports */
-public import stateMachine;
 
 abstract class State {
 
-    public void enter(StateMachine gStateMachine) {} // handles setup
+    public void enter() {} // handles setup
 
-    public void update(Event event, ref Window wnd) {} // handles updates
+    public void update(Event event) {} // handles updates
 
-    public void render(ref Window wnd) {} // draws any graphics
+    public void render() {} // draws any graphics
 
     public void exit() {} // cleans up before leaving
 }

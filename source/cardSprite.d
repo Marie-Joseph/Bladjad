@@ -22,7 +22,6 @@ import Dgame.Window : Window;
 
 /* Project imports */
 import Bladjad;
-import stateMachine;
 
 class CardSprite : Sprite {
 
@@ -42,7 +41,7 @@ class CardSprite : Sprite {
 
     @property float height() { return tex.height() * scale; }
 
-    public void place(ref Window wnd, size_t numPlayed, StateMachine gStateMachine, bool playerCard = false) {
+    public void place(size_t numPlayed, bool playerCard = false) {
         float startX = WndDim.width - this.width - 25;
         float startY = (WndDim.height / 2) - (this.height / 2);
 
@@ -59,12 +58,12 @@ class CardSprite : Sprite {
             this.setRotation(180);
         }
 
-        this.transition(wnd, gStateMachine, startX, startY, endX, endY);
+        this.transition(startX, startY, endX, endY);
     }
 
-    private void transition(ref Window wnd, StateMachine gStateMachine, float startX, float startY, float endX, float endY) {
+    private void transition(float startX, float startY, float endX, float endY) {
         this.setPosition(startX, startY);
-        this.render(wnd, gStateMachine);
+        this.render();
 
         StopWatch sw;
         uint elapsedTime;
@@ -76,15 +75,15 @@ class CardSprite : Sprite {
             float tempX = (diffX * elapsedTime) + startX;
             float tempY = (diffY * elapsedTime) + startY;
             this.setPosition(tempX, tempY);
-            this.render(wnd, gStateMachine);
+            this.render();
         }
 
         this.setPosition(endX, endY);
     }
 
-    private void render(ref Window wnd, StateMachine gStateMachine) {
+    private void render() {
         wnd.clear();
-        gStateMachine.render(wnd);
+        gStateMachine.render();
         wnd.display();
     }
 }

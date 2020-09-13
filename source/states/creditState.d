@@ -24,8 +24,6 @@ import state;
 class CreditState : State {
 
     private {
-        StateMachine gStateMachine;
-
         Font bigFont;
         Font smallFont;
 
@@ -50,9 +48,7 @@ class CreditState : State {
         string licenseString = "CC0";
     }
 
-    override void enter(StateMachine gStateMachine) {
-        this.gStateMachine = gStateMachine;
-
+    override void enter() {
         bigFont = Font("fonts/ExpressionPro.ttf", 64);
         smallFont = Font("fonts/ExpressionPro.ttf", 32);
 
@@ -123,7 +119,7 @@ class CreditState : State {
                              licenseHeader.y + (licenseText.height * 2));
     }
 
-    override void update(Event event, ref Window wnd) {
+    override void update(Event event) {
         switch (event.keyboard.key) {
             case Keyboard.Key.M:
                 gStateMachine.change("Start");
@@ -133,7 +129,7 @@ class CreditState : State {
         }
     }
 
-    override void render(ref Window wnd) {
+    override void render() {
         wnd.draw(programmerHeader);
         wnd.draw(programmerText);
         wnd.draw(artHeader);

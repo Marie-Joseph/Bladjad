@@ -13,7 +13,7 @@
  */
 
 /* Phobos imports */
-import std.stdio : writeln;
+import std.stdio : stderr, writeln;
 
 /* Dgame imports */
 import Dgame.Window : Event, Window;
@@ -37,18 +37,18 @@ class StateMachine {
             if (curState !is null)
                 curState.exit();
             curState = states[stateName];
-            curState.enter(this);
+            curState.enter();
         } else {
-            writeln("Mf said ", stateName);
+            stderr.writeln("Unknown state ", stateName);
         }
     }
 
-    public void update(Event event, ref Window wnd) {
-        curState.update(event, wnd);
+    public void update(Event event) {
+        curState.update(event);
     }
 
-    public void render(ref Window wnd) {
-        curState.render(wnd);
+    public void render() {
+        curState.render();
     }
 
     public void exit() {

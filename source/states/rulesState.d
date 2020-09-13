@@ -24,8 +24,6 @@ import state;
 class RulesState : State {
 
     private {
-        StateMachine gStateMachine;
-
         Font smallFont;
 
         immutable string[] rulesStrings = [
@@ -48,9 +46,7 @@ class RulesState : State {
         Text[rulesStrings.length] rulesText;
     }
 
-    override void enter(StateMachine gStateMachine) {
-        this.gStateMachine = gStateMachine;
-
+    override void enter() {
         smallFont = Font("fonts/ExpressionPro.ttf", 32);
 
         Text last;
@@ -66,7 +62,7 @@ class RulesState : State {
         }
     }
 
-    override void update(Event event, ref Window wnd) {
+    override void update(Event event) {
         switch (event.keyboard.key) {
             case Keyboard.Key.M:
                 gStateMachine.change("Start");
@@ -76,7 +72,7 @@ class RulesState : State {
         }
     }
 
-    override void render(ref Window wnd) {
+    override void render() {
         foreach(text; this.rulesText) {
             wnd.draw(text);
         }
