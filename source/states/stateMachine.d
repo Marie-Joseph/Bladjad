@@ -20,6 +20,7 @@ import Dgame.Window : Event, Window;
 
 /* Project imports */
 import state;
+import Bladjad;
 
 class StateMachine {
 
@@ -34,10 +35,10 @@ class StateMachine {
 
     public void change(string stateName) {
         if (stateName in states) {
-            if (curState !is null)
-                curState.exit();
             curState = states[stateName];
             curState.enter();
+        } else if (stateName == "Quit") {
+            wnd.push(Event.Type.Quit);
         } else {
             stderr.writeln("Unknown state ", stateName);
         }
@@ -58,6 +59,7 @@ class StateMachine {
     public void finish() {
         this.exit();
         foreach (state; states) {
+            state.exit();
             state.destroy();
         }
         states.destroy();

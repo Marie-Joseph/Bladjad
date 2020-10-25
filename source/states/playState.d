@@ -18,6 +18,7 @@ import std.stdio : writeln;
 
 /* Dgame imports */
 // In State superclass
+import Dgame.Math.Rect;
 
 /* Project imports */
 import Bladjad;
@@ -25,13 +26,11 @@ import cardSprite;
 import deck;
 import hand;
 import state;
+import button;
 
 class PlayState : State {
 
     private {
-        Font instFont;
-        Text instText;
-
         Font endFont;
         Text endText;
         Text restartText;
@@ -46,7 +45,9 @@ class PlayState : State {
         Hand playerHand;
         Hand dealerHand;
 
-        string instString = "H: hit   S: stand   M: menu";
+        immutable string[] buttonNames = ["Hit", "Menu", "Quit", "Stand"];
+        Font buttonFont;
+        Button[buttonNames.length] buttons;
 
         bool stood;
         bool firstRun;
@@ -62,14 +63,44 @@ class PlayState : State {
         playerHand = new Hand(true);
         dealerHand = new Hand();
 
-        instFont = Font("fonts/ExpressionPro.ttf", 20);
-        instText = new Text(instFont, instString);
-        instText.mode = Font.Mode.Shaded;
-        instText.foreground = Color4b.Yellow;
-        instText.background = Color4b(0x143D4C);
-        instText.update();
-        // instText.setPosition(5, 5);
-        instText.setPosition(WndDim.width - instText.width - 5, WndDim.height - instText.height - 5);
+        buttonFont = Font("fonts/ExpressionPro.ttf", 24);
+        void delegate(Button) f;
+        float buttonX, buttonY;
+        Rect cardRect = cardBackSprite.getClipRect();
+        foreach (i, name; buttonNames) {
+            switch (name) {
+                case "Hit":
+                    f = (b) => playerHit();
+                    buttons[i] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x;
+                    buttonY = cardRect.y - (buttons[i].height * 2);
+                    break;
+                
+                case "Menu":
+                    f = (b) => gStateMachine.change("Start");
+                    buttons[i] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x;
+                    buttonY = cardRect.y + cardBackSprite.height + buttons[i].height;
+                    break;
+
+                case "Quit":
+                    f = (b) => gStateMachine.change("Quit");
+                    buttons[i] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x + cardBackSprite.width - buttons[i].width;
+                    buttonY = cardRect.y + cardBackSprite.height + buttons[i].height;
+                    break;
+
+                case "Stand":
+                    f = (b) => playerStand(); 
+                    buttons[i] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x + cardBackSprite.width - buttons[i].width;
+                    buttonY = cardRect.y - (buttons[i].height * 2);
+                    break;
+
+                default: break;
+            }
+            buttons[i].setPosition(buttonX, buttonY);
+        }
 
         endFont = Font("fonts/ExpressionPro.ttf", 72);
         endText = new Text(endFont, "Placeholder");
@@ -77,7 +108,7 @@ class PlayState : State {
         endText.foreground = Color4b.Yellow;
         endText.background = Color4b(0x143D4C);
 
-        restartText = new Text(instFont, "Press 'r' to restart, 'm' for menu");
+        restartText = new Text(buttonFont, "Press 'r' to restart, 'm' for menu");
         restartText.mode = Font.Mode.Shaded;
         restartText.foreground = Color4b.Yellow;
         restartText.background = Color4b(0x143D4C);
@@ -98,8 +129,10 @@ class PlayState : State {
         blackjackText.update();
         blackjackText.setPosition((WndDim.width / 2) - (blackjackText.width / 2),
                                   WndDim.height - (blackjackText.height * 3));
-
+        
         firstRun = true;
+        stood = false;
+        ended = false;
     }
 
     override void update(Event event) {
@@ -111,14 +144,10 @@ class PlayState : State {
                     break;
 
                 case Keyboard.Key.M:
-                    stood = false;
-                    ended = false;
                     gStateMachine.change("Start");
                     break;
 
                 case Keyboard.Key.R:
-                    stood = false;
-                    ended = false;
                     gStateMachine.change("Play");
                     break;
 
@@ -129,8 +158,15 @@ class PlayState : State {
                 default: break;
             }
         } else if ((event.type == Event.Type.MouseButtonUp) && (event.mouse.button.button == Mouse.Button.Left)) {
-            Vector2!int mouseVect = Mouse.getCursorPosition();
-            writeln("Mouse clicked at ", mouseVect.x, ", ", mouseVect.y);
+            Vector2!float mouseVect = Mouse.getCursorPosition();
+            foreach (button; buttons) {
+                if (button.getHasFocus(mouseVect))
+                    button.onClick(button);
+            }
+        } else if (event.type == Event.Type.MouseMotion) {
+            Vector2!float mouseVect = Mouse.getCursorPosition();
+            foreach (button; buttons)
+                button.getHasFocus(mouseVect);
         }
     }
 
@@ -153,7 +189,8 @@ class PlayState : State {
             wnd.draw(endText);
             wnd.draw(restartText);
         } else {
-            wnd.draw(instText);
+            foreach (button; buttons)
+                button.render();
         }
         if (playerHand.hasBusted())
             wnd.draw(bustText);
@@ -162,17 +199,19 @@ class PlayState : State {
     }
 
     override void exit() {
-        playerHand.finish();
+        /*playerHand.finish();
         dealerHand.finish();
         deck.destroy();
         cardBackSprite.destroy();
-        instText.destroy();
+        buttons.destroy();
         endText.destroy();
         bustText.destroy();
         blackjackText.destroy();
+        this.destroy();*/
     }
 
     private void playerHit() {
+        if (stood) return;
         if (deck.empty)
             deck.shuffle();
 
@@ -191,10 +230,9 @@ class PlayState : State {
     private void playerStand() {
         stood = true;
         uint dealerScore;
-        while ((dealerScore = dealerHand.curScore()) < 17) {
+        while ((dealerScore = dealerHand.curScore()) < 17)
             hit();
 
-        }
         bool dealerBust = dealerHand.hasBusted();
 
         uint playerScore = playerHand.curScore();

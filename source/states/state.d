@@ -16,7 +16,7 @@
 
 /* Dgame imports */
 public import Dgame.Graphic : Color4b, Text, Shape;
-public import Dgame.Math : Geometry, Vector2, Vertex;
+public import Dgame.Math : Geometry, Vector2, Vector3, Vertex;
 public import Dgame.System : Font, Keyboard, Mouse, StopWatch;
 public import Dgame.Window : Event, Window;
 

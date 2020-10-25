@@ -16,7 +16,7 @@
 
 /* Dgame imports */
 import Dgame.Graphic : Color4b, Shape, Text;
-import Dgame.Math : Vertex, Geometry;
+import Dgame.Math : Vector2, Vertex, Geometry;
 import Dgame.System : Font;
 
 /* Project imports */
@@ -24,60 +24,83 @@ import Bladjad;
 
 class Button {
 
-    private {
-        ubyte borderWidth = 5;
-        ubyte paddingWidth = 10;
-        ubyte totalPad = 15;
-
-        Shape border;
-        Shape padding;
-        Text text;
+    public {
+        bool hasFocus;
 
         float x;
         float y;
+
+        alias Deleg = void delegate(typeof(this));
+        Deleg onClick;
     }
 
-    this(float x, float y, ref Font fnt, string str) {
+    private {
+        ubyte borderWidth = 5;
+        ubyte totalPad = 15;
+
+        Shape border;
+        Text text;
+        Text hiText;
+    }
+
+    this(ref Font fnt, string str, Deleg clk) {
+        this.onClick = clk;
+
         text = new Text(fnt, str);
         text.mode = Font.Mode.Shaded;
         text.foreground = Color4b.Yellow;
         text.background = Color4b(144, 128, 112);
         text.update();
-        text.setPosition(x + totalPad, y + totalPad);
 
-        border = new Shape(Geometry.Quads, [
-                               Vertex(x, y),
-                               Vertex(x + text.width + (totalPad * 2), y),
-                               Vertex(x + text.width + (totalPad * 2), y + text.height + (totalPad * 2)),
-                               Vertex(x, y + text.height + (totalPad * 2))
-                           ]);
-        border.setColor(Color4b.Black);
-
-        padding = new Shape(Geometry.Quads, [
-                                Vertex(x + borderWidth, y + borderWidth),
-                                Vertex(x + text.width + borderWidth + (paddingWidth * 2),
-                                       y + borderWidth),
-                                Vertex(x + text.width + borderWidth + (paddingWidth * 2),
-                                       y + text.height + borderWidth + (paddingWidth * 2)),
-                                Vertex(x + borderWidth, y + text.height + borderWidth + (paddingWidth * 2))
-                            ]);
-        padding.setColor(Color4b.Slategray);
+        hiText = new Text(fnt, str);
+        hiText.mode = Font.Mode.Shaded;
+        hiText.background = Color4b.Cyan;
     }
 
-    @property public uint width() { return text.width + (totalPad * 2); }
+    @property public pure nothrow @nogc uint width() { return text.width + (borderWidth * 2); }
 
-    @property public uint height() { return text.height + (totalPad * 2); }
+    @property public pure nothrow @nogc uint height() { return text.height + (borderWidth * 2); }
+
+    @property public const pure nothrow @nogc string getText() { return text.getText(); }
+
+    public pure nothrow void setPosition(float x, float y) {
+        this.x = x;
+        this.y = y;
+
+        text.setPosition(x + borderWidth, y + borderWidth);
+        hiText.setPosition(text.getPosition());
+        border = new Shape(Geometry.Quads, [
+                               Vertex(x, y),
+                               Vertex(x + text.width + (borderWidth * 2), y),
+                               Vertex(x + text.width + (borderWidth * 2), y + text.height + (borderWidth * 2)),
+                               Vertex(x, y + text.height + (borderWidth * 2))
+                           ]);
+        border.setColor(Color4b.Black);
+    }
+
+    public pure nothrow bool getHasFocus(Vector2!float mouseVect) {
+        if ((mouseVect.y >= this.y) && (mouseVect.y <= (this.y + this.height))) {
+            if ((mouseVect.x >= this.x) && (mouseVect.x <= (this.x + this.width))) {
+                this.hasFocus = true;
+            } else {this.hasFocus = false;}
+        } else {this.hasFocus = false;}
+        
+        return this.hasFocus;
+    }
 
     public void render() {
         wnd.draw(border);
-        wnd.draw(padding);
-        wnd.draw(text);
+        
+        if (this.hasFocus)
+            wnd.draw(hiText);
+        else
+            wnd.draw(text);
     }
 
     public void finish() {
         text.destroy();
+        hiText.destroy();
         border.destroy();
-        padding.destroy();
         this.destroy();
     }
 }

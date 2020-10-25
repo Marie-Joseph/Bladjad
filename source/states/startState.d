@@ -31,11 +31,8 @@ class StartState : State {
 
         Text titleText;
 
-        Button testButton;
-
         immutable string[] optNames = ["Play", "Rules", "Credits", "Quit"];
-        Text[optNames.length] options;
-        Text[optNames.length] highlights;
+        Button[optNames.length] buttons;
         size_t selection;
     }
 
@@ -51,24 +48,19 @@ class StartState : State {
         titleText.setPosition((WndDim.width / 2) - (titleText.width / 2),
                               WndDim.height / 5);
 
-        testButton = new Button(25, WndDim.height - 150, menuFont, "Test");
-
-        auto last = titleText;
+        // cheat and use z coord for height
+        Vector3!float last = Vector3!float(titleText.x, titleText.y, titleText.height);
         foreach (i, name; optNames) {
-            options[i] = new Text(menuFont, name);
-            options[i].mode = Font.Mode.Shaded;
-            options[i].foreground = Color4b.Yellow;
-            options[i].background = Color4b(0x143D4C);
-            options[i].update();
-            options[i].setPosition((WndDim.width / 2) - (options[i].width / 2),
-                                  last.y + last.height + (options[i].height * 2));
+            void delegate(Button) f = (b) {
+                string nm = b.getText();
+                gStateMachine.change(nm);
+            };
+            buttons[i] = new Button(menuFont, name, f);
+            
+            buttons[i].setPosition((WndDim.width / 2) - (buttons[i].width / 2),
+                                  last.y + last.z + (buttons[i].height * 1.5));
 
-            last = options[i];
-
-            highlights[i] = new Text(menuFont, name);
-            highlights[i].mode = Font.Mode.Shaded;
-            highlights[i].background = Color4b.Cyan;
-            highlights[i].setPosition(last.getPosition());
+            last = Vector3!float(buttons[i].x, buttons[i].y, buttons[i].height);
         }
     }
 
@@ -76,74 +68,63 @@ class StartState : State {
         if (event.type == Event.Type.KeyDown) {
             switch (event.keyboard.key) {
                 case Keyboard.Key.Down:
-                    if (selection < (options.length - 1))
+                    buttons[selection].hasFocus = false;
+                    
+                    if (selection < (buttons.length - 1)) {
                         selection++;
-                    else
+                    } else {
                         selection = 0;
+                    }
+
+                    buttons[selection].hasFocus = true;
                     break;
 
                 case Keyboard.Key.Up:
-                    if (selection > 0)
+                    buttons[selection].hasFocus = false;
+                    
+                    if (selection > 0) {
                         selection--;
-                    else
-                        selection = options.length - 1;
+                    } else {
+                        selection = buttons.length - 1;
+                    }
+
+                    buttons[selection].hasFocus = true;
                     break;
 
                 case Keyboard.Key.Return:
-                    changeState();
+                    buttons[selection].onClick(buttons[selection]);
                     break;
 
                 default: break;
             }
         } else if ((event.type == Event.Type.MouseButtonDown) && (event.mouse.button.button == Mouse.Button.Left)) {
-            setSelection();
-            changeState();
+            Vector2!float mouseVect = Mouse.getCursorPosition();
+            foreach (i, button; buttons) {
+                if (button.getHasFocus(mouseVect)) {
+                    button.onClick(button);
+                } 
+            }
         } else if (event.type == Event.Type.MouseMotion) {
-            setSelection();
+            Vector2!float mouseVect = Mouse.getCursorPosition();
+            foreach (i, button; buttons) {
+                if (button.getHasFocus(mouseVect))
+                    selection = i;
+            }
         }
     }
 
     override void render() {
         wnd.draw(titleText);
-
-        foreach (i, option; options) {
-            if (i == selection)
-                wnd.draw(highlights[i]);
-            else
-                wnd.draw(option);
+        foreach (button; buttons) {
+            button.render();
         }
-
-        testButton.render();
     }
 
     override void exit() {
-        foreach (option; options) {
-            option.destroy();
+        foreach (button; buttons) {
+            button.destroy();
         }
-        options.destroy();
-        foreach (highlight; highlights) {
-            highlight.destroy();
-        }
-        highlights.destroy();
+        buttons.destroy();
         titleText.destroy();
-    }
-
-    private void setSelection() {
-        Vector2!int mouseVect = Mouse.getCursorPosition();
-        foreach (i, option; options) {
-            if ((mouseVect.y >= option.y) && (mouseVect.y <= (option.y + option.height))) {
-                if ((mouseVect.x >= option.x) && (mouseVect.x <= (option.x + option.width))) {
-                    selection = i;
-                }
-            }
-        }
-    }
-
-    private void changeState() {
-        string choice = options[selection].getText();
-        if (choice == "Quit")
-            wnd.push(Event.Type.Quit);
-        else
-            gStateMachine.change(choice);
     }
 }
