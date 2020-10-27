@@ -20,6 +20,7 @@
 /* Project imports */
 import Bladjad;
 import state;
+import button;
 
 class CreditState : State {
 
@@ -46,6 +47,9 @@ class CreditState : State {
         string licenseHeaderString = "License";
         Text licenseText;
         string licenseString = "CC0";
+
+        Button menuButton;
+        Button quitButton;
     }
 
     override void enter() {
@@ -117,15 +121,37 @@ class CreditState : State {
         licenseText.update();
         licenseText.setPosition(halfway - (licenseText.width / 2),
                              licenseHeader.y + (licenseText.height * 2));
+
+        void delegate(Button) f = (b) => gStateMachine.change("Start");
+        menuButton = new Button(smallFont, "Menu", f);
+        menuButton.setPosition((WndDim.width / 4) + menuButton.width,
+                               WndDim.height - (menuButton.height * 2));
+
+        f = (b) => gStateMachine.change("Quit");
+        quitButton = new Button(smallFont, "Quit", f);
+        quitButton.setPosition(((WndDim.width * 3) / 4) - quitButton.width,
+                               menuButton.y);
     }
 
     override void update(Event event) {
-        switch (event.keyboard.key) {
-            case Keyboard.Key.M:
-                gStateMachine.change("Start");
-                break;
+        if (event.type == Event.Type.KeyDown) {
+            switch (event.keyboard.key) {
+                case Keyboard.Key.M:
+                    menuButton.onClick(menuButton);
+                    break;
 
-            default: break;
+                default: break;
+            }
+        } else if ((event.type == Event.Type.MouseButtonUp) && (event.mouse.button.button == Mouse.Button.Left)) {
+            Vector2!float mouseVect = Mouse.getCursorPosition();
+            if (menuButton.getHasFocus(mouseVect))
+                menuButton.onClick(menuButton);
+            else if (quitButton.getHasFocus(mouseVect))
+                quitButton.onClick(quitButton);
+        } else if (event.type == Event.Type.MouseMotion) {
+            Vector2!float mouseVect = Mouse.getCursorPosition();
+            menuButton.getHasFocus(mouseVect);
+            quitButton.getHasFocus(mouseVect);
         }
     }
 
@@ -138,6 +164,8 @@ class CreditState : State {
         wnd.draw(fontText);
         wnd.draw(licenseHeader);
         wnd.draw(licenseText);
+        menuButton.render();
+        quitButton.render();
     }
 
     override void exit() {
@@ -149,5 +177,8 @@ class CreditState : State {
         fontText.destroy();
         licenseHeader.destroy();
         licenseText.destroy();
+        menuButton.finish();
+        quitButton.finish();
+        this.destroy();
     }
 }

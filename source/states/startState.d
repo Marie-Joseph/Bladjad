@@ -121,10 +121,9 @@ class StartState : State {
     }
 
     override void exit() {
-        foreach (button; buttons) {
-            button.destroy();
-        }
+        foreach (button; buttons) { button.destroy(); }
         buttons.destroy();
         titleText.destroy();
+        this.destroy();
     }
 }

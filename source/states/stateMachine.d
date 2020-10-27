@@ -57,11 +57,7 @@ class StateMachine {
     }
 
     public void finish() {
-        this.exit();
-        foreach (state; states) {
-            state.exit();
-            state.destroy();
-        }
+        foreach (state; states) { state.exit(); }
         states.destroy();
         this.destroy();
     }

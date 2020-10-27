@@ -33,30 +33,29 @@ class PlayState : State {
     private {
         Font endFont;
         Text endText;
-        Text restartText;
         Text bustText;
         Text blackjackText;
         bool ended;
 
         Deck deck;
 
-        CardSprite cardBackSprite;
+        CardSprite cardBack;
 
         Hand playerHand;
         Hand dealerHand;
 
-        immutable string[] buttonNames = ["Hit", "Menu", "Quit", "Stand"];
         Font buttonFont;
-        Button[buttonNames.length] buttons;
+        immutable string[] buttonNames = ["Hit", "Menu", "Quit", "Restart", "Stand"];
+        Button[string] buttons;
 
         bool stood;
         bool firstRun;
     }
 
     override void enter() {
-        cardBackSprite = new CardSprite("images/cards/back.png");
-        cardBackSprite.setPosition(WndDim.width - cardBackSprite.width - 25,
-                                   (WndDim.height / 2) - (cardBackSprite.height / 2));
+        cardBack = new CardSprite("images/cards/back.png");
+        cardBack.setPosition(WndDim.width - cardBack.width - 25,
+                                   (WndDim.height / 2) - (cardBack.height / 2));
 
         deck = new Deck();
 
@@ -66,40 +65,47 @@ class PlayState : State {
         buttonFont = Font("fonts/ExpressionPro.ttf", 24);
         void delegate(Button) f;
         float buttonX, buttonY;
-        Rect cardRect = cardBackSprite.getClipRect();
-        foreach (i, name; buttonNames) {
+        Rect cardRect = cardBack.getClipRect();
+        foreach (name; buttonNames) {
             switch (name) {
                 case "Hit":
                     f = (b) => playerHit();
-                    buttons[i] = new Button(buttonFont, name, f);
+                    buttons[name] = new Button(buttonFont, name, f);
                     buttonX = cardRect.x;
-                    buttonY = cardRect.y - (buttons[i].height * 2);
+                    buttonY = cardRect.y - (buttons[name].height * 2);
                     break;
                 
                 case "Menu":
                     f = (b) => gStateMachine.change("Start");
-                    buttons[i] = new Button(buttonFont, name, f);
+                    buttons[name] = new Button(buttonFont, name, f);
                     buttonX = cardRect.x;
-                    buttonY = cardRect.y + cardBackSprite.height + buttons[i].height;
+                    buttonY = cardRect.y + cardBack.height + buttons[name].height;
+                    break;
+
+                case "Restart":
+                    f = (b) => gStateMachine.change("Play");
+                    buttons[name] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x + (cardBack.width / 2) - (buttons[name].width / 2);
+                    buttonY = cardRect.y + cardBack.height + (buttons[name].height * 2) + 10;
                     break;
 
                 case "Quit":
                     f = (b) => gStateMachine.change("Quit");
-                    buttons[i] = new Button(buttonFont, name, f);
-                    buttonX = cardRect.x + cardBackSprite.width - buttons[i].width;
-                    buttonY = cardRect.y + cardBackSprite.height + buttons[i].height;
+                    buttons[name] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x + cardBack.width - buttons[name].width;
+                    buttonY = cardRect.y + cardBack.height + buttons[name].height;
                     break;
 
                 case "Stand":
                     f = (b) => playerStand(); 
-                    buttons[i] = new Button(buttonFont, name, f);
-                    buttonX = cardRect.x + cardBackSprite.width - buttons[i].width;
-                    buttonY = cardRect.y - (buttons[i].height * 2);
+                    buttons[name] = new Button(buttonFont, name, f);
+                    buttonX = cardRect.x + cardBack.width - buttons[name].width;
+                    buttonY = cardRect.y - (buttons[name].height * 2);
                     break;
 
                 default: break;
             }
-            buttons[i].setPosition(buttonX, buttonY);
+            buttons[name].setPosition(buttonX, buttonY);
         }
 
         endFont = Font("fonts/ExpressionPro.ttf", 72);
@@ -107,12 +113,6 @@ class PlayState : State {
         endText.mode = Font.Mode.Shaded;
         endText.foreground = Color4b.Yellow;
         endText.background = Color4b(0x143D4C);
-
-        restartText = new Text(buttonFont, "Press 'r' to restart, 'm' for menu");
-        restartText.mode = Font.Mode.Shaded;
-        restartText.foreground = Color4b.Yellow;
-        restartText.background = Color4b(0x143D4C);
-        restartText.update();
 
         bustText = new Text(endFont, "BUST");
         bustText.mode = Font.Mode.Shaded;
@@ -139,20 +139,19 @@ class PlayState : State {
         if (event.type == Event.Type.KeyDown) {
             switch (event.keyboard.key) {
                 case Keyboard.Key.H:
-                    if (!stood)
-                        playerHit();
+                    buttons["Hit"].onClick(buttons["Hit"]);
                     break;
 
                 case Keyboard.Key.M:
-                    gStateMachine.change("Start");
+                    buttons["Menu"].onClick(buttons["Menu"]);
                     break;
 
                 case Keyboard.Key.R:
-                    gStateMachine.change("Play");
+                    buttons["Restart"].onClick(buttons["Restart"]);
                     break;
 
                 case Keyboard.Key.S:
-                    playerStand();
+                    buttons["Stand"].onClick(buttons["Stand"]);
                     break;
 
                 default: break;
@@ -176,7 +175,7 @@ class PlayState : State {
             playerHit(); hit(); playerHit(); hit();
         }
 
-        wnd.draw(cardBackSprite);
+        wnd.draw(cardBack);
         foreach(card; playerHand) {
             wnd.draw(card);
         }
@@ -187,7 +186,9 @@ class PlayState : State {
         dealerHand.reset();
         if (ended) {
             wnd.draw(endText);
-            wnd.draw(restartText);
+            buttons["Menu"].render();
+            buttons["Quit"].render();
+            buttons["Restart"].render();
         } else {
             foreach (button; buttons)
                 button.render();
@@ -199,15 +200,16 @@ class PlayState : State {
     }
 
     override void exit() {
-        /*playerHand.finish();
+        playerHand.finish();
         dealerHand.finish();
         deck.destroy();
-        cardBackSprite.destroy();
+        cardBack.destroy();
+        foreach (button; buttons) { button.finish(); }
         buttons.destroy();
         endText.destroy();
         bustText.destroy();
         blackjackText.destroy();
-        this.destroy();*/
+        this.destroy();
     }
 
     private void playerHit() {
@@ -256,24 +258,32 @@ class PlayState : State {
     }
 
     private void tie() {
-        setEndText("It's a draw!");
+        setEnd("Draw");
     }
 
     private void playerVictory() {
-        setEndText("You win!");
+        setEnd("Victory");
     }
 
     private void playerLoss() {
-        setEndText("You lose...");
+        setEnd("Defeat");
     }
 
-    private void setEndText(string toWrite) {
+    private void setEnd(string toWrite) {
         endText.setData(toWrite);
         endText.update();
         endText.setPosition((WndDim.width / 2) - (endText.width / 2),
                             (WndDim.height / 2) - (endText.height / 2));
-        restartText.setPosition((WndDim.width / 2) - (restartText.width / 2),
-                                endText.y + endText.height + 5);
+        
+        buttons["Restart"].setPosition((WndDim.width / 2) - (buttons["Restart"].width / 2),
+                                       (WndDim.height / 2) + endText.height + 5);
+        Vector3!float base;
+        base.x = buttons["Restart"].x;
+        base.y = buttons["Restart"].y;
+        base.z = buttons["Restart"].width;
+        buttons["Menu"].setPosition(base.x - (base.z / 2) - buttons["Menu"].width, base.y);
+        buttons["Quit"].setPosition(base.x + ((3 * base.z) / 2), base.y);
+        
         ended = true;
     }
 }
