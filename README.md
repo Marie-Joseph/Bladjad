@@ -28,8 +28,3 @@ Bladjad's control scheme is simple and, hopefully, intuitive.
 #### Universal
 * _M key_ - return to the menu
 * _Q key/Escape key_ - exit
-
-## Contributions
-At this time, no code contributions will be accepted here. However, any bugs,
-especially in score calculation, should be reported here; and feedback on
-anything, especially UI, is welcome.
