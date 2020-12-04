@@ -10,6 +10,7 @@ export VERSION="0.1";
 # LDC2 - 1.21.0
 # GDC - Ubuntu 10.2.0-13ubuntu1
 COMPILER=dmd
+
 PROG_NAME=bladjad
 STD_PREFIX=usr
 APPIMAGE_PREFIX=AppDir
@@ -21,8 +22,6 @@ DESKTOP_DIR=$PREFIX/share/applications
 FONTS_DIR=$DATA_DIR/fonts
 IMAGES_DIR=$DATA_DIR/images
 ICONS_DIR=$PREFIX/share/icons/hicolor
-DUB_DIR=.dub
-DUB_PKG_DIR=$DUB_DIR/packages
 
 if [ ! -e $PROG_NAME ]; then
     echo "--------------------";
@@ -47,10 +46,10 @@ echo "Copying resources...";
 cp -r images $IMAGES_DIR;
 cp -r fonts $FONTS_DIR;
 
-
 echo "--------------------";
 echo "Copying desktop files..."l
 cp $PROG_NAME.desktop $DESKTOP_DIR/
+# TODO: make this into a loop probably
 cp icons/16x16/bladjad-icon.png $ICONS_DIR/16x16/apps/
 cp icons/32x32/bladjad-icon.png $ICONS_DIR/32x32/apps/
 cp icons/64x64/bladjad-icon.png $ICONS_DIR/64x64/apps/
