@@ -1,3 +1,4 @@
+.buildconfig
 .dub
 dub.selections.json
 docs.json

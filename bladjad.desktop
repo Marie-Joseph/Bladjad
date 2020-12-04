@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Bladjad
+GenericName=Blackjack
+Comment=Play blackjack
+Exec=bladjad
+Terminal=false
+Type=Application
+Keywords=Game;Card;Blackjack;
+Icon=bladjad-icon
+Categories=Game;
