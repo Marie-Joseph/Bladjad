@@ -1,6 +1,15 @@
 #!/bin/sh
 
 export VERSION="0.1";
+
+# Note that dmd produces the smallest AppImages,
+# but ldc2 produces the smallest binaries.
+# gdc is comparable to ldc2 AppImages
+# but to dmd binaries.
+# DMD64 - 2.094.0
+# LDC2 - 1.21.0
+# GDC - Ubuntu 10.2.0-13ubuntu1
+COMPILER=dmd
 PROG_NAME=bladjad
 STD_PREFIX=usr
 APPIMAGE_PREFIX=AppDir
@@ -18,7 +27,7 @@ DUB_PKG_DIR=$DUB_DIR/packages
 if [ ! -e $PROG_NAME ]; then
     echo "--------------------";
     echo "Building $PROG_NAME...";
-    dub build -q;
+    dub build -q --build=release --compiler=$COMPILER;
 fi;
 
 if [ ! -d $PREFIX ]; then
