@@ -43,7 +43,7 @@ nothrow @safe class Deck {
         "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "DX", "DJ", "DQ", "DK"];
     }
 
-    nothrow @safe this() {
+    @safe this() {
         rand.seed(unpredictableSeed);
         deck = cards.dup();
         shuffle();
