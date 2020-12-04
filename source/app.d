@@ -49,8 +49,8 @@ void main() {
                                       "Rules": new RulesState(),
                                       "Credits": new CreditState]);
 
-    if (!exists("screenshots"))
-        mkdir("screenshots");
+    //if (!exists("screenshots"))
+        //mkdir("screenshots");
 
     Event event;
     gStateMachine.change("Start");
@@ -68,8 +68,8 @@ void main() {
                 case Event.Type.KeyDown:
                     if ((event.keyboard.key == Keyboard.Key.Esc) || (event.keyboard.key == Keyboard.Key.Q))
                         wnd.push(Event.Type.Quit);
-                    else if (event.keyboard.key == Keyboard.Key.P)
-                        wnd.capture().saveToFile(format!"screenshots/Screenshot-%s.png"(Clock.currTime().toISOString()));
+                    //else if (event.keyboard.key == Keyboard.Key.P)
+                        //wnd.capture().saveToFile(format!"screenshots/Screenshot-%s.png"(Clock.currTime().toISOString()));
                     else
                         goto default;
                     break;
