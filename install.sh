@@ -5,7 +5,7 @@ export VERSION="0.1";
 COMPILER=dmd
 
 PROG_NAME=bladjad
-STD_PREFIX=usr/local
+STD_PREFIX=/usr/local
 PREFIX=$STD_PREFIX
 BIN_DIR=$PREFIX/bin
 LIB_DIR=$PREFIX/lib
@@ -27,7 +27,7 @@ if [ ! -d $DATA_DIR ]; then
 	mkdir -p $DATA_DIR;
 fi;
 
-if [ ! -d $DESKTOP_DIR]; then
+if [ ! -d $DESKTOP_DIR ]; then
 	echo "--------------------";
 	echo "Creating $DESKTOP_DIR...";
 	mkdir -p $DESKTOP_DIR;
@@ -35,7 +35,7 @@ fi;
 
 echo "--------------------";
 echo "Copying resources...";
-cp -r image $IMAGES_DIR;
+cp -r images $IMAGES_DIR;
 cp -r fonts $FONTS_DIR;
 
 echo "--------------------";
