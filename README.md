@@ -39,16 +39,3 @@ git clone https://github.com/Marie-Joseph/Bladjad.git branch-of-choice
 cd Bladjad
 dub build --build=release --compiler=yourDCompiler
 ```
-
-### Linux
-An AppImage is pretty simple. Just download the file, modify it to be executable,
-put it whereever you want, and execute it. Everything is included in the image.
-#### How to make the AppImage executable
-Your file manager probably enables you to modify a file's permissions, eg
-under Properties > Permissions from the right-click menu in GNOME Files.
-For convenience, the commandline instructions are included below - note
-that you'll need to fill in the actual name and path yourself.
-```
-cd /directory/of/AppImage/
-chmod +x NameOf.AppImage
-```
