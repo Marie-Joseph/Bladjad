@@ -24,9 +24,11 @@ import Dgame.Window : Window;
 import bladjad;
 
 /// A subclass of Sprite to specially handle displaying cards.
-class CardSprite : Sprite {
+class CardSprite : Sprite
+{
 
-    private {
+    private
+    {
         Texture tex;
         float scale;
     }
@@ -38,7 +40,8 @@ class CardSprite : Sprite {
      *  filePath = path to the image of the card
      *  scale = scale to adjust card; for future use
      */
-    this(string filePath, float scale = 0.75) {
+    this(string filePath, float scale = 0.75)
+    {
         this.tex = Texture(Surface(filePath));
         super(tex);
         this.scale = scale;
@@ -46,10 +49,16 @@ class CardSprite : Sprite {
     }
 
     /// Scaled width of the CardSprite for accurate placement.
-    @property float width() { return tex.width() * scale; }
+    @property float width()
+    {
+        return tex.width() * scale;
+    }
 
     /// Scaled height of the CardSprite for accurate placement.
-    @property float height() { return tex.height() * scale; }
+    @property float height()
+    {
+        return tex.height() * scale;
+    }
 
     /**
      *  Place a CardSprite on the board.
@@ -58,7 +67,8 @@ class CardSprite : Sprite {
      *      numPlayed = integer indicating order of card played; for future use
      *      playerCard = bool indicating if this card is for the player
      */
-    public void place(size_t numPlayed, bool playerCard = false) {
+    public void place(size_t numPlayed, bool playerCard = false)
+    {
         const float startX = WndDim.width - this.width - 25;
         const float startY = (WndDim.height / 2) - (this.height / 2);
 
@@ -70,7 +80,8 @@ class CardSprite : Sprite {
 
         const float endY = playerCard ? WndDim.height - (this.height / 2) : -(this.height / 2);
 
-        if (!playerCard) {
+        if (!playerCard)
+        {
             this.setRotationCenter(this.width / 2, this.height / 2);
             this.setRotation(180);
         }
@@ -78,7 +89,8 @@ class CardSprite : Sprite {
         this.transition(startX, startY, endX, endY);
     }
 
-    private void transition(float startX, float startY, float endX, float endY) {
+    private void transition(float startX, float startY, float endX, float endY)
+    {
         this.setPosition(startX, startY);
         this.render();
 
@@ -88,7 +100,8 @@ class CardSprite : Sprite {
         const float diffX = (endX - startX) / goalTime;
         const float diffY = (endY - startY) / goalTime;
         sw.reset();
-        while ((elapsedTime = sw.getElapsedTicks()) < goalTime) {
+        while ((elapsedTime = sw.getElapsedTicks()) < goalTime)
+        {
             const float tempX = (diffX * elapsedTime) + startX;
             const float tempY = (diffY * elapsedTime) + startY;
             this.setPosition(tempX, tempY);
@@ -98,7 +111,8 @@ class CardSprite : Sprite {
         this.setPosition(endX, endY);
     }
 
-    private void render() {
+    private void render()
+    {
         wnd.clear();
         gStateMachine.render();
         wnd.display();

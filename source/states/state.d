@@ -22,17 +22,26 @@ public import Dgame.Window : Event, Window;
 
 /* Project imports */
 
-abstract class State {
+abstract class State
+{
 
     /// Perform any necessary configuration of the State on entry.
-    public void enter() {}
+    public void enter()
+    {
+    }
 
     /// Update the State every tick.
-    public void update(Event event) {}
+    public void update(Event event)
+    {
+    }
 
     /// Render the State every tick.
-    public void render() {}
+    public void render()
+    {
+    }
 
     /// Perform any necessary cleanup before leaving the State.
-    public void exit() {}
+    public void exit()
+    {
+    }
 }
