@@ -22,9 +22,11 @@ import Dgame.Window : Event, Window;
 import state;
 import bladjad;
 
-class StateMachine {
+class StateMachine
+{
 
-    private {
+    private
+    {
         State[string] states;
         State curState;
     }
@@ -37,7 +39,8 @@ class StateMachine {
      *
      *  Returns: A new StateMachine
      */
-    this(State[string] statesArr) {
+    this(State[string] statesArr)
+    {
         states = statesArr.dup();
     }
 
@@ -47,13 +50,19 @@ class StateMachine {
      *  Params:
      *      stateName = the string name of the State to be changed to
      */
-    public void change(string stateName) {
-        if (stateName in states) {
+    public void change(string stateName)
+    {
+        if (stateName in states)
+        {
             curState = states[stateName];
             curState.enter();
-        } else if (stateName == "Quit") {
+        }
+        else if (stateName == "Quit")
+        {
             wnd.push(Event.Type.Quit);
-        } else {
+        }
+        else
+        {
             stderr.writeln("Unknown state ", stateName);
         }
     }
@@ -64,23 +73,28 @@ class StateMachine {
      *  Params:
      *      event = a Dgame.Window.Event intercepted this tick
      */
-    public void update(Event event) {
+    public void update(Event event)
+    {
         curState.update(event);
     }
 
     /// Render the current State.
-    public void render() {
+    public void render()
+    {
         curState.render();
     }
 
     /// Exit the current State.
-    public void exit() {
+    public void exit()
+    {
         curState.exit();
     }
 
     /// Cleanup the StateMachine before destruction.
-    public void finish() {
-        foreach (state; states) { state.exit(); }
+    public void finish()
+    {
+        foreach (state; states)
+            state.exit();
         states.destroy();
         this.destroy();
     }

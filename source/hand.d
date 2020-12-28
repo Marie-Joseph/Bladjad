@@ -16,7 +16,7 @@
 import std.array : byPair;
 import std.conv : to;
 import std.format : format;
-import std.range: front, popFront, empty;
+import std.range : front, popFront, empty;
 import std.uni : isAlpha;
 
 /* Dgame imports */
@@ -26,9 +26,11 @@ import Dgame.Graphic;
 import bladjad;
 import cardSprite;
 
-class Hand {
+class Hand
+{
 
-    private {
+    private
+    {
         string[] cardNames;
         CardSprite[] cardSprites;
 
@@ -48,7 +50,8 @@ class Hand {
      *  Returns:
      *      A new Hand
      */
-    this(bool player = false) {
+    this(bool player = false)
+    {
         this.isPlayer = player;
     }
 
@@ -58,34 +61,47 @@ class Hand {
      *  Params:
      *      card = a two-letter card code
      */
-    public void add(string card) {
+    public void add(string card)
+    {
         cardNames ~= card;
         cardSprites ~= new CardSprite(format!"images/cards/%s.png"(card));
         cardSprites[$ - 1].place(cardSprites.length - 1, isPlayer);
         updateScore();
     }
 
-    private void updateScore() {
+    private void updateScore()
+    {
         uint aces;
         score = 0;
-        foreach(name; cardNames) {
-            if (name[1].isAlpha) {
-                if (name[1] == 'A') {
+        foreach (name; cardNames)
+        {
+            if (name[1].isAlpha)
+            {
+                if (name[1] == 'A')
+                {
                     score += 11;
                     aces += 1;
-                } else {
+                }
+                else
+                {
                     score += 10;
                 }
-            } else {
+            }
+            else
+            {
                 score += to!int(to!string(name[1]));
             }
         }
 
-        while (score > 21) {
-            if (aces > 0) {
+        while (score > 21)
+        {
+            if (aces > 0)
+            {
                 score -= 10;
                 aces -= 1;
-            } else {
+            }
+            else
+            {
                 busted = true;
                 break;
             }
@@ -93,9 +109,12 @@ class Hand {
     }
 
     /// Return true if the Hand has an ace, else false
-    public bool hasAce() {
-        foreach (card; cardNames) {
-            if (card[0] == 'A') {
+    public bool hasAce()
+    {
+        foreach (card; cardNames)
+        {
+            if (card[0] == 'A')
+            {
                 return true;
             }
         }
@@ -103,30 +122,48 @@ class Hand {
     }
 
     /// Return true if this Hand had busted, else false
-    public @property hasBusted() { return this.busted; }
+    public @property hasBusted()
+    {
+        return this.busted;
+    }
 
     /// Return this Hand's current score
-    public @property curScore() { return score; }
+    public @property curScore()
+    {
+        return score;
+    }
 
     /// Cleanup function
-    public void finish() {
-        foreach(card; cardSprites) {
+    public void finish()
+    {
+        foreach (card; cardSprites)
+        {
             card.destroy();
         }
         this.destroy();
     }
 
     /// Helper function for calculating score
-    public void reset() {
+    public void reset()
+    {
         frontIndex = 0;
     }
 
     /// Range interface front function; returns front card of Hand
-    public CardSprite front() { return cardSprites[frontIndex]; }
+    public CardSprite front()
+    {
+        return cardSprites[frontIndex];
+    }
 
     /// Range interface popFront function
-    public void popFront() { frontIndex++; }
+    public void popFront()
+    {
+        frontIndex++;
+    }
 
     /// Range interface empty function
-    public bool empty() { return frontIndex < cardSprites.length ? false : true; }
+    public bool empty()
+    {
+        return frontIndex < cardSprites.length ? false : true;
+    }
 }
