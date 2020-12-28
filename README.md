@@ -35,7 +35,7 @@ which will include specific compilation instructions for that format. Once you h
 executable, you can install it manually or as the format requires. The full set of
 commands, with standin names:
 ```
-git clone https://github.com/Marie-Joseph/Bladjad.git branch-of-choice
+git clone https://github.com/Marie-Joseph/bladjad.git branch-of-choice
 cd Bladjad
 dub build --build=release --compiler=yourDCompiler
 ```

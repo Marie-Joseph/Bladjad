@@ -21,7 +21,7 @@ import std.stdio : writeln;
 import Dgame.Math.Rect;
 
 /* Project imports */
-import Bladjad;
+import bladjad;
 import cardSprite;
 import deck;
 import hand;
@@ -65,7 +65,7 @@ class PlayState : State {
         buttonFont = Font("fonts/ExpressionPro.ttf", 24);
         void delegate(Button) f;
         float buttonX, buttonY;
-        Rect cardRect = cardBack.getClipRect();
+        const Rect cardRect = cardBack.getClipRect();
         foreach (name; buttonNames) {
             switch (name) {
                 case "Hit":
@@ -235,10 +235,10 @@ class PlayState : State {
         while ((dealerScore = dealerHand.curScore()) < 17)
             hit();
 
-        bool dealerBust = dealerHand.hasBusted();
+        const bool dealerBust = dealerHand.hasBusted();
 
-        uint playerScore = playerHand.curScore();
-        bool playerBust = playerHand.hasBusted();
+        const uint playerScore = playerHand.curScore();
+        const bool playerBust = playerHand.hasBusted();
 
         if (dealerBust) {
             if (playerBust) {

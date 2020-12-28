@@ -21,8 +21,9 @@ import Dgame.System : StopWatch;
 import Dgame.Window : Window;
 
 /* Project imports */
-import Bladjad;
+import bladjad;
 
+/// A subclass of Sprite to specially handle displaying cards.
 class CardSprite : Sprite {
 
     private {
@@ -30,6 +31,13 @@ class CardSprite : Sprite {
         float scale;
     }
 
+    /**
+     * Constructor for CardSprite.
+     *
+     * Params:
+     *  filePath = path to the image of the card
+     *  scale = scale to adjust card; for future use
+     */
     this(string filePath, float scale = 0.75) {
         this.tex = Texture(Surface(filePath));
         super(tex);
@@ -37,13 +45,22 @@ class CardSprite : Sprite {
         this.setScale(scale, scale);
     }
 
+    /// Scaled width of the CardSprite for accurate placement.
     @property float width() { return tex.width() * scale; }
 
+    /// Scaled height of the CardSprite for accurate placement.
     @property float height() { return tex.height() * scale; }
 
+    /**
+     *  Place a CardSprite on the board.
+     *
+     *  Params:
+     *      numPlayed = integer indicating order of card played; for future use
+     *      playerCard = bool indicating if this card is for the player
+     */
     public void place(size_t numPlayed, bool playerCard = false) {
-        float startX = WndDim.width - this.width - 25;
-        float startY = (WndDim.height / 2) - (this.height / 2);
+        const float startX = WndDim.width - this.width - 25;
+        const float startY = (WndDim.height / 2) - (this.height / 2);
 
         float endX;
         if (playerCard)
@@ -51,7 +68,7 @@ class CardSprite : Sprite {
         else
             endX = ((WndDim.width / 4) + ((this.width * 2) / 5) * numPlayed);
 
-        float endY = playerCard ? WndDim.height - (this.height / 2) : -(this.height / 2);
+        const float endY = playerCard ? WndDim.height - (this.height / 2) : -(this.height / 2);
 
         if (!playerCard) {
             this.setRotationCenter(this.width / 2, this.height / 2);
@@ -67,13 +84,13 @@ class CardSprite : Sprite {
 
         StopWatch sw;
         uint elapsedTime;
-        uint goalTime = 500;
-        float diffX = (endX - startX) / goalTime;
-        float diffY = (endY - startY) / goalTime;
+        const uint goalTime = 500;
+        const float diffX = (endX - startX) / goalTime;
+        const float diffY = (endY - startY) / goalTime;
         sw.reset();
         while ((elapsedTime = sw.getElapsedTicks()) < goalTime) {
-            float tempX = (diffX * elapsedTime) + startX;
-            float tempY = (diffY * elapsedTime) + startY;
+            const float tempX = (diffX * elapsedTime) + startX;
+            const float tempY = (diffY * elapsedTime) + startY;
             this.setPosition(tempX, tempY);
             this.render();
         }

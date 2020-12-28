@@ -20,17 +20,21 @@ import Dgame.Math : Vector2, Vertex, Geometry;
 import Dgame.System : Font;
 
 /* Project imports */
-import Bladjad;
+import bladjad;
 
 class Button {
 
     public {
+        /// Whether or not the mouse cursor is currently over this Button.
         bool hasFocus;
 
+        /// X coord of the top-left corner of the Button.
         float x;
+        /// Y coord of the top-left corner of the Button.
         float y;
 
         alias Deleg = void delegate(typeof(this));
+        /// The function to be called when this Button is clicked.
         Deleg onClick;
     }
 
@@ -43,6 +47,16 @@ class Button {
         Text hiText;
     }
 
+    /**
+     *  Constructor for Button
+     *
+     *  Params:
+     *      fnt = Dgame.System.Font to be used for Button text
+     *      str = string to be shown by Button
+     *      clk = Deleg to be used for `onClick`
+     *
+     *  Returns: A new Button
+     */
     this(ref Font fnt, string str, Deleg clk) {
         this.onClick = clk;
 
@@ -57,12 +71,22 @@ class Button {
         hiText.background = Color4b.Cyan;
     }
 
+    /// The scaled width of the Button.
     @property public pure nothrow @nogc uint width() { return text.width + (borderWidth * 2); }
 
+    /// The scaled height of the Button.
     @property public pure nothrow @nogc uint height() { return text.height + (borderWidth * 2); }
 
-    @property public const pure nothrow @nogc string getText() { return text.getText(); }
+    /// The text of the Button.
+    @property public pure nothrow @nogc string getText() { return text.getText(); }
 
+    /**
+     *  Set the position of the Button.
+     *
+     *  Params:
+     *      x = the x coord of the top-left corner of the Button
+     *      y = the y coord of the top-left corner of the Button
+     */
     public pure nothrow void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
@@ -78,6 +102,14 @@ class Button {
         border.setColor(Color4b.Black);
     }
 
+    /**
+     *  Check whether the mouse cursor is over the Button.
+     *
+     *  Params:
+     *      mouseVect = the float Vector of the mouse cursor's coordinates
+     *
+     *  Returns: true if mouse over Button, else false
+     */
     public pure nothrow bool getHasFocus(Vector2!float mouseVect) {
         if ((mouseVect.y >= this.y) && (mouseVect.y <= (this.y + this.height))) {
             if ((mouseVect.x >= this.x) && (mouseVect.x <= (this.x + this.width))) {
@@ -88,6 +120,7 @@ class Button {
         return this.hasFocus;
     }
 
+    /// Draw the Button to the screen.
     public void render() {
         wnd.draw(border);
         
@@ -97,6 +130,7 @@ class Button {
             wnd.draw(text);
     }
 
+    /// Cleanup before removing the Button.
     public void finish() {
         text.destroy();
         hiText.destroy();
