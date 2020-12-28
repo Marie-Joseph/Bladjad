@@ -22,9 +22,11 @@ import Dgame.System : Font;
 /* Project imports */
 import bladjad;
 
-class Button {
+class Button
+{
 
-    public {
+    public
+    {
         /// Whether or not the mouse cursor is currently over this Button.
         bool hasFocus;
 
@@ -38,7 +40,8 @@ class Button {
         Deleg onClick;
     }
 
-    private {
+    private
+    {
         ubyte borderWidth = 5;
         ubyte totalPad = 15;
 
@@ -57,7 +60,8 @@ class Button {
      *
      *  Returns: A new Button
      */
-    this(ref Font fnt, string str, Deleg clk) {
+    this(ref Font fnt, string str, Deleg clk)
+    {
         this.onClick = clk;
 
         text = new Text(fnt, str);
@@ -72,13 +76,22 @@ class Button {
     }
 
     /// The scaled width of the Button.
-    @property public pure nothrow @nogc uint width() { return text.width + (borderWidth * 2); }
+    @property public pure nothrow @nogc uint width()
+    {
+        return text.width + (borderWidth * 2);
+    }
 
     /// The scaled height of the Button.
-    @property public pure nothrow @nogc uint height() { return text.height + (borderWidth * 2); }
+    @property public pure nothrow @nogc uint height()
+    {
+        return text.height + (borderWidth * 2);
+    }
 
     /// The text of the Button.
-    @property public pure nothrow @nogc string getText() { return text.getText(); }
+    @property public pure nothrow @nogc string getText()
+    {
+        return text.getText();
+    }
 
     /**
      *  Set the position of the Button.
@@ -87,18 +100,19 @@ class Button {
      *      x = the x coord of the top-left corner of the Button
      *      y = the y coord of the top-left corner of the Button
      */
-    public pure nothrow void setPosition(float x, float y) {
+    public pure nothrow void setPosition(float x, float y)
+    {
         this.x = x;
         this.y = y;
 
         text.setPosition(x + borderWidth, y + borderWidth);
         hiText.setPosition(text.getPosition());
         border = new Shape(Geometry.Quads, [
-                               Vertex(x, y),
-                               Vertex(x + text.width + (borderWidth * 2), y),
-                               Vertex(x + text.width + (borderWidth * 2), y + text.height + (borderWidth * 2)),
-                               Vertex(x, y + text.height + (borderWidth * 2))
-                           ]);
+                Vertex(x, y), Vertex(x + text.width + (borderWidth * 2), y),
+                Vertex(x + text.width + (borderWidth * 2),
+                    y + text.height + (borderWidth * 2)),
+                Vertex(x, y + text.height + (borderWidth * 2))
+                ]);
         border.setColor(Color4b.Black);
     }
 
@@ -110,20 +124,28 @@ class Button {
      *
      *  Returns: true if mouse over Button, else false
      */
-    public pure nothrow bool getHasFocus(Vector2!float mouseVect) {
-        if ((mouseVect.y >= this.y) && (mouseVect.y <= (this.y + this.height))) {
-            if ((mouseVect.x >= this.x) && (mouseVect.x <= (this.x + this.width))) {
+    public pure nothrow bool getHasFocus(Vector2!float mouseVect)
+    {
+        if ((mouseVect.y >= this.y) && (mouseVect.y <= (this.y + this.height)))
+        {
+            if ((mouseVect.x >= this.x) && (mouseVect.x <= (this.x + this.width)))
                 this.hasFocus = true;
-            } else {this.hasFocus = false;}
-        } else {this.hasFocus = false;}
-        
+            else
+                this.hasFocus = false;
+        }
+        else
+        {
+            this.hasFocus = false;
+        }
+
         return this.hasFocus;
     }
 
     /// Draw the Button to the screen.
-    public void render() {
+    public void render()
+    {
         wnd.draw(border);
-        
+
         if (this.hasFocus)
             wnd.draw(hiText);
         else
@@ -131,7 +153,8 @@ class Button {
     }
 
     /// Cleanup before removing the Button.
-    public void finish() {
+    public void finish()
+    {
         text.destroy();
         hiText.destroy();
         border.destroy();

@@ -30,24 +30,29 @@
 import std.random : Random, unpredictableSeed;
 import std.uni : isAlpha;
 
-nothrow @safe @nogc class Deck {
+nothrow @safe @nogc class Deck
+{
 
-    private {
+    private
+    {
         Random rand;
         string[] deck;
         size_t frontIndex;
         static immutable cards = [
-        "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "SX", "SJ", "SQ", "SK",
-        "CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "CX", "CJ", "CQ", "CK",
-        "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "HX", "HJ", "HQ", "HK",
-        "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "DX", "DJ", "DQ", "DK"];
+            "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "SX", "SJ",
+            "SQ", "SK", "CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9",
+            "CX", "CJ", "CQ", "CK", "HA", "H2", "H3", "H4", "H5", "H6", "H7",
+            "H8", "H9", "HX", "HJ", "HQ", "HK", "DA", "D2", "D3", "D4", "D5",
+            "D6", "D7", "D8", "D9", "DX", "DJ", "DQ", "DK"
+        ];
     }
 
     /// Constructor for Deck.
-    @safe this() {
+    @safe this()
+    {
         rand.seed(unpredictableSeed);
         deck = cards.dup();
-        shuffle();
+        this.shuffle();
     }
 
     /* Core functions */
@@ -58,44 +63,56 @@ nothrow @safe @nogc class Deck {
      *  Returns:
      *      A two-letter code indicating the card drawn
      */
-    nothrow @safe @nogc string draw() {
+    nothrow @safe @nogc string draw()
+    {
         string topCard = front();
         popFront();
         return topCard;
     }
 
     /// Shuffle the Deck.
-    nothrow @safe void shuffle() {
-        if (deck.length != cards.length) { deck = cards.dup(); }
+    nothrow @safe void shuffle()
+    {
+        if (deck.length != cards.length)
+        {
+            deck = cards.dup();
+        }
         riffle();
         frontIndex = 0;
     }
 
     /// Shuffle only undrawn card.
-    nothrow @safe @nogc void partialShuffle() {
+    nothrow @safe @nogc void partialShuffle()
+    {
         deck = deck[frontIndex .. $];
         riffle();
         frontIndex = 0;
     }
 
     /// A custom shuffling algorithm based on https://fredhohman.com/card-shuffling/
-    private nothrow @safe @nogc void riffle() {
-        if (deck.length > 1) {
+    private nothrow @safe @nogc void riffle()
+    {
+        if (deck.length > 1)
+        {
             const string bottomCard = deck[$ - 1];
             string topCard;
             size_t newIndex;
-            do {
+            do
+            {
                 newIndex = rand.front() % deck.length;
                 rand.popFront();
 
-                if (newIndex != 0) {
+                if (newIndex != 0)
+                {
                     topCard = deck[0];
-                    foreach (i; 0 .. newIndex) {
+                    foreach (i; 0 .. newIndex)
+                    {
                         deck[i] = deck[i + 1];
                     }
                     deck[newIndex] = topCard;
                 }
-            } while (topCard != bottomCard);
+            }
+            while (topCard != bottomCard);
         }
     }
 
@@ -107,7 +124,10 @@ nothrow @safe @nogc class Deck {
      *  Returns:
      *      A string containing the fully-qualified name of a drawn card.
      */
-    nothrow @safe string drawAsString() { return cardToString(draw()); }
+    nothrow @safe string drawAsString()
+    {
+        return cardToString(draw());
+    }
 
     /**
      *  Give the fully-qualified name of the top card without drawing it.
@@ -115,7 +135,10 @@ nothrow @safe @nogc class Deck {
      *  Returns:
      *      A string representing the fully-qualified name of the top card.
      */
-    nothrow @safe string frontToString() { return cardToString(front()); }
+    nothrow @safe string frontToString()
+    {
+        return cardToString(front());
+    }
 
     /**
      *  Converts the given card code to a string of the format "[value] of [suit]"
@@ -126,63 +149,70 @@ nothrow @safe @nogc class Deck {
      *  Returns:
      *      A string of the format "[value] of [suit]" representing the name of a card.
      */
-    nothrow @safe static string cardToString(string card) {
-        if (card == "empty") { return card; }
+    nothrow @safe static string cardToString(string card)
+    {
+        if (card == "empty")
+            return card;
 
         string cardStr;
         const char suit = card[0];
         char value = card[1];
 
-        if (value.isAlpha) {
-            switch (value) {
-                case ('A'):
-                    cardStr ~= "Ace";
-                    break;
+        if (value.isAlpha)
+        {
+            switch (value)
+            {
+            case ('A'):
+                cardStr ~= "Ace";
+                break;
 
-                case ('X'):
-                    cardStr ~= "10";
-                    break;
+            case ('X'):
+                cardStr ~= "10";
+                break;
 
-                case ('J'):
-                    cardStr ~= "Jack";
-                    break;
+            case ('J'):
+                cardStr ~= "Jack";
+                break;
 
-                case ('Q'):
-                    cardStr ~= "Queen";
-                    break;
+            case ('Q'):
+                cardStr ~= "Queen";
+                break;
 
-                case ('K'):
-                    cardStr ~= "King";
-                    break;
+            case ('K'):
+                cardStr ~= "King";
+                break;
 
-                default:
-                    break;
+            default:
+                break;
             }
-        } else {
+        }
+        else
+        {
             cardStr ~= value;
         }
 
         cardStr ~= " of ";
 
-        switch (suit) {
-            case ('S'):
-                cardStr ~= "Spades";
-                break;
+        switch (suit)
+        {
+        case ('S'):
+            cardStr ~= "Spades";
+            break;
 
-            case ('C'):
-                cardStr ~= "Clubs";
-                break;
+        case ('C'):
+            cardStr ~= "Clubs";
+            break;
 
-            case ('H'):
-                cardStr ~= "Hearts";
-                break;
+        case ('H'):
+            cardStr ~= "Hearts";
+            break;
 
-            case ('D'):
-                cardStr ~= "Diamonds";
-                break;
+        case ('D'):
+            cardStr ~= "Diamonds";
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         return cardStr;
@@ -191,27 +221,38 @@ nothrow @safe @nogc class Deck {
     /* Range interface */
 
     /// Range interface empty property.
-    nothrow @safe @nogc bool empty() { return frontIndex >= deck.length ? true : false; }
+    nothrow @safe @nogc bool empty()
+    {
+        return frontIndex >= deck.length ? true : false;
+    }
 
     /// Range interface front property; returns top card.
-    nothrow @safe @nogc string front() { return !empty ? deck[frontIndex] : "empty"; }
+    nothrow @safe @nogc string front()
+    {
+        return !empty ? deck[frontIndex] : "empty";
+    }
 
     /// Range interface popFront property; removes top card.
-    nothrow @safe @nogc void popFront() { if (!empty) frontIndex++; }
+    nothrow @safe @nogc void popFront()
+    {
+        if (!empty)
+            frontIndex++;
+    }
 
     /* Overrides */
 
     /// An override to make sure the Deck is printed as its cards.
-    override string toString() {
+    override string toString()
+    {
         string retStr = "[\"";
 
-        foreach (i, str; deck) {
+        foreach (i, str; deck)
+        {
             retStr ~= str;
-            if (i != deck.length - 1) {
+            if (i != deck.length - 1)
                 retStr ~= "\", \"";
-            } else {
-                retStr ~="\"]";
-            }
+            else
+                retStr ~= "\"]";
         }
 
         return retStr;
