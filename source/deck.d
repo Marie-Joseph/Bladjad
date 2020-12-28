@@ -30,19 +30,20 @@
 import std.random : Random, unpredictableSeed;
 import std.uni : isAlpha;
 
-nothrow @safe class Deck {
+nothrow @safe @nogc class Deck {
 
     private {
         Random rand;
         string[] deck;
         size_t frontIndex;
-        immutable string[52] cards = [
+        static immutable cards = [
         "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "SX", "SJ", "SQ", "SK",
         "CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "CX", "CJ", "CQ", "CK",
         "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "HX", "HJ", "HQ", "HK",
         "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "DX", "DJ", "DQ", "DK"];
     }
 
+    /// Constructor for Deck.
     @safe this() {
         rand.seed(unpredictableSeed);
         deck = cards.dup();
@@ -51,28 +52,36 @@ nothrow @safe class Deck {
 
     /* Core functions */
 
+    /**
+     *  Draw a card from the Deck.
+     *
+     *  Returns:
+     *      A two-letter code indicating the card drawn
+     */
     nothrow @safe @nogc string draw() {
         string topCard = front();
         popFront();
         return topCard;
     }
 
+    /// Shuffle the Deck.
     nothrow @safe void shuffle() {
         if (deck.length != cards.length) { deck = cards.dup(); }
         riffle();
         frontIndex = 0;
     }
 
+    /// Shuffle only undrawn card.
     nothrow @safe @nogc void partialShuffle() {
         deck = deck[frontIndex .. $];
         riffle();
         frontIndex = 0;
     }
 
-    // Based on https://fredhohman.com/card-shuffling/
+    /// A custom shuffling algorithm based on https://fredhohman.com/card-shuffling/
     private nothrow @safe @nogc void riffle() {
         if (deck.length > 1) {
-            string bottomCard = deck[$ - 1];
+            const string bottomCard = deck[$ - 1];
             string topCard;
             size_t newIndex;
             do {
@@ -92,16 +101,36 @@ nothrow @safe class Deck {
 
     /* Convenience functions */
 
+    /**
+     *  Draw a card and give its fully-qualified name.
+     *
+     *  Returns:
+     *      A string containing the fully-qualified name of a drawn card.
+     */
     nothrow @safe string drawAsString() { return cardToString(draw()); }
 
+    /**
+     *  Give the fully-qualified name of the top card without drawing it.
+     *
+     *  Returns:
+     *      A string representing the fully-qualified name of the top card.
+     */
     nothrow @safe string frontToString() { return cardToString(front()); }
 
-    // Converts the given card to a string of the format "[value] of [suit]"
+    /**
+     *  Converts the given card code to a string of the format "[value] of [suit]"
+     *
+     *  Params:
+     *      card = two-letter card code
+     *
+     *  Returns:
+     *      A string of the format "[value] of [suit]" representing the name of a card.
+     */
     nothrow @safe static string cardToString(string card) {
         if (card == "empty") { return card; }
 
         string cardStr;
-        char suit = card[0];
+        const char suit = card[0];
         char value = card[1];
 
         if (value.isAlpha) {
@@ -161,14 +190,18 @@ nothrow @safe class Deck {
 
     /* Range interface */
 
+    /// Range interface empty property.
     nothrow @safe @nogc bool empty() { return frontIndex >= deck.length ? true : false; }
 
+    /// Range interface front property; returns top card.
     nothrow @safe @nogc string front() { return !empty ? deck[frontIndex] : "empty"; }
 
+    /// Range interface popFront property; removes top card.
     nothrow @safe @nogc void popFront() { if (!empty) frontIndex++; }
 
     /* Overrides */
 
+    /// An override to make sure the Deck is printed as its cards.
     override string toString() {
         string retStr = "[\"";
 

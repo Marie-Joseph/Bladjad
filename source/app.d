@@ -11,7 +11,7 @@
 /**
  * This is the entry file for Bladjad.
  */
-module Bladjad;
+module bladjad;
 
 /* Phobos imports */
 import std.datetime.systime : Clock;
@@ -31,9 +31,12 @@ import rulesState;
 import stateMachine;
 import startState;
 
+/// The dimensions for the Window. Has width and height.
 enum WndDim: int { width = 1024, height = 768 }
 
+/// Global Window object
 Window wnd;
+/// Global StateMachine
 StateMachine gStateMachine;
 
 void main() {
