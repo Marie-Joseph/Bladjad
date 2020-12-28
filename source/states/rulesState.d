@@ -18,7 +18,7 @@
 // In State superclass
 
 /* Project imports */
-import Bladjad;
+import bladjad;
 import button;
 import state;
 

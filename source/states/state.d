@@ -24,11 +24,15 @@ public import Dgame.Window : Event, Window;
 
 abstract class State {
 
-    public void enter() {} // handles setup
+    /// Perform any necessary configuration of the State on entry.
+    public void enter() {}
 
-    public void update(Event event) {} // handles updates
+    /// Update the State every tick.
+    public void update(Event event) {}
 
-    public void render() {} // draws any graphics
+    /// Render the State every tick.
+    public void render() {}
 
-    public void exit() {} // cleans up before leaving
+    /// Perform any necessary cleanup before leaving the State.
+    public void exit() {}
 }

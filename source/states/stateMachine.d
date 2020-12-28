@@ -20,7 +20,7 @@ import Dgame.Window : Event, Window;
 
 /* Project imports */
 import state;
-import Bladjad;
+import bladjad;
 
 class StateMachine {
 
@@ -29,10 +29,24 @@ class StateMachine {
         State curState;
     }
 
+    /**
+     *  Constructor for StateMachine.
+     *
+     *  Params:
+     *      statesArr = array of strings containing the names of States
+     *
+     *  Returns: A new StateMachine
+     */
     this(State[string] statesArr) {
         states = statesArr.dup();
     }
 
+    /**
+     *  Change the current State.
+     *
+     *  Params:
+     *      stateName = the string name of the State to be changed to
+     */
     public void change(string stateName) {
         if (stateName in states) {
             curState = states[stateName];
@@ -44,18 +58,27 @@ class StateMachine {
         }
     }
 
+    /**
+     *  Update the active State every tick.
+     *
+     *  Params:
+     *      event = a Dgame.Window.Event intercepted this tick
+     */
     public void update(Event event) {
         curState.update(event);
     }
 
+    /// Render the current State.
     public void render() {
         curState.render();
     }
 
+    /// Exit the current State.
     public void exit() {
         curState.exit();
     }
 
+    /// Cleanup the StateMachine before destruction.
     public void finish() {
         foreach (state; states) { state.exit(); }
         states.destroy();

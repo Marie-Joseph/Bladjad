@@ -18,7 +18,7 @@
 // In State superclass
 
 /* Project imports */
-import Bladjad;
+import bladjad;
 import state;
 import button;
 
@@ -56,7 +56,7 @@ class CreditState : State {
         bigFont = Font("fonts/ExpressionPro.ttf", 64);
         smallFont = Font("fonts/ExpressionPro.ttf", 32);
 
-        uint halfway = WndDim.width / 2;
+        const uint halfway = WndDim.width / 2;
 
         programmerHeader = new Text(bigFont, programmerHeaderString);
         programmerHeader.mode = Font.Mode.Shaded;

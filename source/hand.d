@@ -23,7 +23,7 @@ import std.uni : isAlpha;
 import Dgame.Graphic;
 
 /* Project imports */
-import Bladjad;
+import bladjad;
 import cardSprite;
 
 class Hand {
@@ -39,10 +39,25 @@ class Hand {
         size_t frontIndex;
     }
 
+    /**
+     *  Create a new Hand.
+     *
+     *  Params:
+     *      player = bool indicating whether or not this is the player's hand
+     *
+     *  Returns:
+     *      A new Hand
+     */
     this(bool player = false) {
         this.isPlayer = player;
     }
 
+    /**
+     *  Add a card to the Hand.
+     *
+     *  Params:
+     *      card = a two-letter card code
+     */
     public void add(string card) {
         cardNames ~= card;
         cardSprites ~= new CardSprite(format!"images/cards/%s.png"(card));
@@ -77,6 +92,7 @@ class Hand {
         }
     }
 
+    /// Return true if the Hand has an ace, else false
     public bool hasAce() {
         foreach (card; cardNames) {
             if (card[0] == 'A') {
@@ -86,10 +102,13 @@ class Hand {
         return false;
     }
 
+    /// Return true if this Hand had busted, else false
     public @property hasBusted() { return this.busted; }
 
+    /// Return this Hand's current score
     public @property curScore() { return score; }
 
+    /// Cleanup function
     public void finish() {
         foreach(card; cardSprites) {
             card.destroy();
@@ -97,13 +116,17 @@ class Hand {
         this.destroy();
     }
 
+    /// Helper function for calculating score
     public void reset() {
         frontIndex = 0;
     }
 
+    /// Range interface front function; returns front card of Hand
     public CardSprite front() { return cardSprites[frontIndex]; }
 
+    /// Range interface popFront function
     public void popFront() { frontIndex++; }
 
+    /// Range interface empty function
     public bool empty() { return frontIndex < cardSprites.length ? false : true; }
 }
