@@ -89,6 +89,18 @@ class CardSprite : Sprite
         this.transition(startX, startY, endX, endY);
     }
 
+    /**
+     *  Change the current Sprite's Texture
+     *
+     *  Params:
+     *      newImg = string filepath of a new image to use as a Texture
+     */
+    public void updateTexture(string newImg)
+    {
+        this.tex = Texture(Surface(newImg));
+        this.setTexture(this.tex);
+    }
+
     private void transition(float startX, float startY, float endX, float endY)
     {
         this.setPosition(startX, startY);
