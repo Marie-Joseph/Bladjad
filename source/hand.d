@@ -64,9 +64,18 @@ class Hand
     public void add(string card)
     {
         cardNames ~= card;
-        cardSprites ~= new CardSprite(format!"images/cards/%s.png"(card));
+        if ((cardSprites.length == 0) && !this.isPlayer)
+            cardSprites ~= new CardSprite("images/cards/back.png");
+        else
+            cardSprites ~= new CardSprite(format!"images/cards/%s.png"(card));
         cardSprites[$ - 1].place(cardSprites.length - 1, isPlayer);
         updateScore();
+    }
+
+    /// Flip face-down cards upon the completion of a game.
+    public void flip()
+    {
+        cardSprites[0].updateTexture(format!"images/cards/%s.png"(cardNames[0]));
     }
 
     private void updateScore()
