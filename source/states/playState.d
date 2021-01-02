@@ -319,6 +319,8 @@ class PlayState : State
         endText.setPosition((WndDim.width / 2) - (endText.width / 2),
                 (WndDim.height / 2) - (endText.height / 2));
 
+        dealerHand.flip();
+
         buttons["Restart"].setPosition((WndDim.width / 2) - (buttons["Restart"].width / 2),
                 (WndDim.height / 2) + endText.height + 5);
         Vector3!float base;
