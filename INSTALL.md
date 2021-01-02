@@ -1,7 +1,7 @@
 ## Installing on FreeBSD
 
 ### Requirements
-First you'll need to get ahold of the binary for Bladjad. The .txz file made
+First you'll need to get ahold of the binary for Bladjad. The .tar.xz file made
 availble on itch.io or the GitHub release pages should have everything you'll
 need. If you're compiling from source, check [COMPILE.md](COMPILE.md).
 
