@@ -41,12 +41,9 @@ cp -r fonts $FONTS_DIR;
 echo "--------------------";
 echo "Copying desktop files...";
 cp $PROG_NAME.desktop $DESKTOP_DIR/
-# TODO: make this a loop probably
-cp icons/16x16/bladjad-icon.png $ICONS_DIR/16x16/apps/
-cp icons/32x32/bladjad-icon.png $ICONS_DIR/32x32/apps/
-cp icons/64x64/bladjad-icon.png $ICONS_DIR/64x64/apps/
-cp icons/128x128/bladjad-icon.png $ICONS_DIR/128x128/apps/
-cp icons/256x256/bladjad-icon.png $ICONS_DIR/256x256/apps/
+for size in 16 32 64 128 256; do
+    cp icons/${size}x${size}/bladjad-icon.png $ICONS_DIR/${size}x${size}/apps/;
+done;
 
 echo "--------------------";
 echo "Installing binary...";
