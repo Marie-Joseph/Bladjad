@@ -29,4 +29,4 @@ cp README.md $PKG_NAME/;
 
 echo "----------------------";
 echo "Creating archive...";
-tar cJf $PKG_NAME.txz $PKG_NAME;
+tar cJf $PKG_NAME.tar.xz $PKG_NAME;
