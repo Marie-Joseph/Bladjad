@@ -8,7 +8,7 @@ It uses free assets found on itch.io and collected [here](https://itch.io/c/1043
 ## Controls
 Bladjad can be used entirely with a mouse. However, it also uses a
 keyboard control scheme which is simple and, hopefully, intuitive.
-#### Menu:
+#### Menu
 * _Arrow keys_ - navigate
 * _Enter key_ - select highlighted option
 #### In-Game
