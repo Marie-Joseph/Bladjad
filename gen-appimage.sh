@@ -29,16 +29,16 @@ if [ ! -e $PROG_NAME ]; then
     dub build -q --build=release --compiler=$COMPILER;
 fi;
 
+echo "--------------------";
+echo "First linuxdeploy...";
 if [ ! -d $PREFIX ]; then
     linuxdeploy --appdir $APPIMAGE_PREFIX;
 fi;
 
+echo "--------------------";
+echo "Creating $DATA_DIR...";
 if [ ! -d $DATA_DIR ]; then
     mkdir -p $DATA_DIR;
-fi;
-
-if [ ! -d $DESKTOP_DIR ]; then
-    mkdir -p $DESKTOP_DIR;
 fi;
 
 echo "--------------------";
@@ -47,19 +47,8 @@ cp -r images $IMAGES_DIR;
 cp -r fonts $FONTS_DIR;
 
 echo "--------------------";
-echo "Copying desktop files..."l
-cp $PROG_NAME.desktop $DESKTOP_DIR/
-for size in 16 32 64 128 256; do
-    cp icons/${size}x${size}/bladjad-icon.png $ICONS_DIR/${size}x${size}/apps/;
-done;
-
-echo "--------------------";
-echo "Installing binary...";
-mv $PROG_NAME $BIN_DIR/$PROG_NAME;
-
-echo "--------------------";
 echo "Second linuxdeploy...";
-linuxdeploy --appdir $APPIMAGE_PREFIX --output appimage;
+linuxdeploy --appdir $APPIMAGE_PREFIX --output appimage -e $PROG_NAME -d $PROG_NAME.desktop -i icons/16/$PROG_NAME-icon.png -i icons/32/$PROG_NAME-icon.png -i icons/64/$PROG_NAME-icon.png -i icons/128/$PROG_NAME-icon.png -i icons/256/$PROG_NAME-icon.png;
 
 echo "--------------------";
 echo "Done~!";
